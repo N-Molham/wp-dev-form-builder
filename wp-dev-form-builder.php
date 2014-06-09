@@ -106,10 +106,131 @@ if ( defined( 'SUPER_FB_DEMO_MODE' ) )
 */
 function wp_sfb_test_admin_init()
 {
-	add_management_page( __( 'Super Form Builder Demo', WP_SFB_TEXT_DOMAIN ), __( 'Super Form Builder Demo', WP_SFB_TEXT_DOMAIN ), 'manage_options', 'wp-sfb-test', 'wp_sfb_test_callback' );
+	add_management_page( 'Super Form Builder Demo', 'Super Form Builder Demo', 'manage_options', 'wp-sfb-test', 'wp_sfb_test_callback' );
 
 	// create form
 	$form = new SFB_Form( 'demo' );
+
+	// set settings
+	$form->set_settings( array ( 
+			'page' => 'wp-sfb-test', 
+	) );
+
+	$form->set_sections( array ( 
+			'basic' => array ( 
+					'label' => 'Basic Inputs',
+			),
+			'advanced' => array ( 
+					'label' => 'Advanced Inputs',
+					'description' => 'Component elements using jQuery etc ...',
+			),
+	) );
+
+	// set form fields
+	$form->set_fields( array ( 
+			'field-text' => array ( 
+					'label' => 'Text',
+					'input' => 'text',
+					'data_type' => 'text',
+					'description' => 'Regular text input',
+					'section' => 'basic',
+			),
+			'field-mail' => array ( 
+					'label' => 'Email',
+					'input' => 'email',
+					'data_type' => 'email',
+					'description' => 'Email input',
+					'section' => 'basic',
+					'attributes' => array ( 
+							'placeholder' => 'Enter Your Email Address',
+							'class' => 'regular-text code',
+					),
+			),
+			'field-textarea' => array ( 
+					'label' => 'Text',
+					'input' => 'textarea',
+					'data_type' => 'text',
+					'section' => 'basic',
+					'section' => 'basic',
+					'attributes' => array ( 
+							'rows' => '6',
+							'class' => 'large-text',
+					),
+			),
+			'field-number' => array ( 
+					'label' => 'Number',
+					'input' => 'number',
+					'data_type' => 'integer',
+					'section' => 'basic',
+					'attributes' => array ( 
+							'step' => '1',
+							'min' => '0',
+							'class' => 'small-text',
+					),
+			),
+			'field-checkbox' => array ( 
+					'label' => 'Single Checkbox',
+					'input' => 'checkbox',
+					'single' => true,
+					'options' => array ( 
+							'yes' => 'Option Label',
+					),
+					'description' => 'set <code>single</code> parameter to <code>true</code> for a single option',
+					'section' => 'basic',
+			),
+			'field-checkboxes' => array ( 
+					'label' => 'Multiple Checkboxes',
+					'input' => 'checkbox',
+					'single' => false,
+					'options' => array ( 
+							'one' => 'Option One',
+							'two' => 'Option Two',
+							'three' => 'Option Three',
+							'four' => 'Option Four',
+					),
+					'description' => 'set <code>single</code> parameter to <code>false</code> for a multiple options',
+					'section' => 'basic',
+			),
+			'field-radio' => array ( 
+					'label' => 'Radio',
+					'input' => 'radio',
+					'options' => array ( 
+							'one' => 'Option One',
+							'two' => 'Option Two',
+							'three' => 'Option Three',
+							'four' => 'Option Four',
+					),
+					'section' => 'basic',
+			),
+			'field-select' => array ( 
+					'label' => 'Dropdown Menu',
+					'input' => 'select',
+					'options' => array ( 
+							'one' => 'Option One',
+							'two' => 'Option Two',
+							'three' => 'Option Three',
+							'four' => 'Option Four',
+					),
+					'section' => 'basic',
+			),
+			'field-select-multi' => array ( 
+					'label' => 'Dropdown Menu',
+					'input' => 'select',
+					'options' => array ( 
+							'one' => 'Option One',
+							'two' => 'Option Two',
+							'three' => 'Option Three',
+							'four' => 'Option Four',
+							'five' => 'Option Five',
+							'sex' => 'Option Sex',
+					),
+					'attributes' => array ( 
+							'multiple' => 'multiple',
+							'size' => '3',
+					),
+					'section' => 'basic',
+			),
+	) );
 }
 
 /**
@@ -122,10 +243,32 @@ function wp_sfb_test_callback()
 	// page wrapper start
 	echo '<div class="wrap">';
 
-	echo '<h2>', __( 'Super Form Builder Demo', WP_SFB_TEXT_DOMAIN ) ,'</h2>';
+	echo '<h2>Super Form Builder Demo</h2>';
+
+	SFB_Form::render_form( 'demo' );
 
 	// page wrapper end
 	echo '</div>';
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

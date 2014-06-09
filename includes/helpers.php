@@ -6,6 +6,18 @@
  * @since 1.0
  */
 
+final class SFB_Helpers
+{
+	public static function parse_attributes( $attrs )
+	{
+		$out = '';
+		foreach ( $attrs as $key => $value )
+			$out .= $key .'="'. esc_attr( $value ) .'" ';
+
+		return $out;
+	}
+}
+
 if( !function_exists( 'dump_data_export' ) )
 {
 	/**
