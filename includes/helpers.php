@@ -10,11 +10,11 @@ final class SFB_Helpers
 {
 	public static function parse_attributes( $attrs )
 	{
-		$out = '';
-		foreach ( $attrs as $key => $value )
-			$out .= $key .'="'. esc_attr( $value ) .'" ';
+		array_walk( $attrs, function( &$item, $key ) {
+			$item = $key .'="'. esc_attr( $item ) .'"';
+		} );
 
-		return $out;
+		return implode( ' ', $attrs );
 	}
 }
 

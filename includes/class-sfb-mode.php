@@ -56,7 +56,7 @@ class SFB_Mode
 
 			// fields loop
 			foreach ( $form_fields as $field_name => $field_args )
-				$this->field_layout( $field_name, $field_args );
+				$this->field_layout( $field_name, $field_args, $values[$field_name] );
 
 			// end wrapper
 			$this->end_fields_wrapper();
@@ -79,7 +79,7 @@ class SFB_Mode
 
 				// fields loop
 				foreach ( $section_fields as $field_name => $field_args )
-					$this->field_layout( $field_name, $field_args );
+					$this->field_layout( $field_name, $field_args, $values[$field_name] );
 
 				// end wrapper
 				$this->end_fields_wrapper();
@@ -95,9 +95,10 @@ class SFB_Mode
 	 * 
 	 * @param string $field_name
 	 * @param array $field_args
+	 * @param mixed $field_value
 	 * @return void
 	 */
-	protected function field_layout( $field_name, $field_args )
+	protected function field_layout( $field_name, $field_args, $field_value )
 	{
 		// layout start
 		echo '<tr><th scope="row">';
@@ -106,12 +107,225 @@ class SFB_Mode
 		echo '<label for="', $field_name ,'">', $field_args['label'] ,'</label></th><td>';
 
 		// input
-		dump_data( $field_args['input'] );
-		// echo '<input name="', $field_name ,'" type="text" id="', $field_name ,'" value="Test WP" class="regular-text">';
+		// check input existance
+		$input_method = 'input_'. sanitize_key( $field_args['input'] );
+		if ( method_exists( $this, $input_method ) )
+			$this->$input_method( $field_name, $field_args, $field_value );
+		else
+			echo 'Unknown input';
+
+		// field description
+		$this->field_description( $field_args['description'], $field_name, $field_args );
 
 		// layout end
 		echo '</td></tr>';
 	}
+
+	/**
+	 * Field input: text
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_text( $name, $args, $value )
+	{
+		// default attributes
+		$attrs = wp_parse_args( $args['attributes'], array ( 
+				'class' => 'regular-text',
+		) );
+
+		// input layout
+		echo '<input name="', $name ,'" type="text" id="', $name ,'" value="', esc_attr( $value ) ,'" ', SFB_Helpers::parse_attributes( $attrs ) ,' />';
+	}
+
+	/**
+	 * Field input: email
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_email( $name, $args, $value )
+	{
+		// default attributes
+		$attrs = wp_parse_args( $args['attributes'], array ( 
+				'class' => 'regular-text',
+		) );
+
+		// input layout
+		echo '<input name="', $name ,'" type="email" id="', $name ,'" value="', esc_attr( $value ) ,'" ', SFB_Helpers::parse_attributes( $attrs ) ,' />';
+	}
+
+	/**
+	 * Field input: number
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_number( $name, $args, $value )
+	{
+		// default attributes
+		$attrs = wp_parse_args( $args['attributes'], array ( 
+				'step' => '1',
+				'class' => 'small-text',
+		) );
+
+		// input layout
+		echo '<input name="', $name ,'" type="number" id="', $name ,'" value="', esc_attr( $value ) ,'" ', SFB_Helpers::parse_attributes( $attrs ) ,' />';
+	}
+
+	/**
+	 * Field input: textarea
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_textarea( $name, $args, $value )
+	{
+		// default attributes
+		$attrs = wp_parse_args( $args['attributes'], array ( 
+				'cols' => '24',
+				'rows' => '8',
+				'class' => 'large-text',
+		) );
+
+		// input layout
+		echo '<textarea name="', $name ,'" id="', $name ,'" ', SFB_Helpers::parse_attributes( $attrs ) ,'>', $value ,'</textarea>';
+	}
+
+	/**
+	 * Field input: checkbox
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_checkbox( $name, $args, $value )
+	{
+		// default attributes
+		$args = wp_parse_args( $args, array ( 
+				'options' => array(),
+				'single' => false, 
+		) );
+
+		if ( !$args['single'] && empty( $value ) )
+			$value = array();
+
+		// input layout
+		echo '<fieldset><legend class="screen-reader-text"><span>', $args['label'] ,'</span></legend>';
+
+		$attrs = SFB_Helpers::parse_attributes( $args['attributes'] );
+
+		// options loop
+		foreach ( $args['options'] as $option_label => $option_value )
+		{
+			echo '<label><input type="checkbox" name="', $name, ( $args['single'] ? '' : '[]' ) ,'" value="', $option_value ,'"';
+
+			if ( $args['single'] )
+				echo $option_value === $value ? ' checked="checked"' : '';
+			else 
+				echo in_array( $option_value, $value ) ? ' checked="checked"' : '';
+
+			echo $attrs, '> <span>', $option_label ,'</span></label><br/>';
+		}
+
+		echo '</fieldset>';
+	}
+
+	/**
+	 * Field input: radio
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_radio( $name, $args, $value )
+	{
+		// default attributes
+		$args = wp_parse_args( $args, array ( 
+				'options' => array(),
+				'attributes' => array(), 
+		) );
+
+		$attrs = SFB_Helpers::parse_attributes( $args['attributes'] );
+
+		// input layout
+		echo '<fieldset><legend class="screen-reader-text"><span>', $args['label'] ,'</span></legend>';
+
+		// options loop
+		foreach ( $args['options'] as $option_label => $option_value )
+		{
+			echo '<label><input type="radio" name="', $name ,'" value="', $option_value ,'"';
+
+			echo $option_value === $value ? ' checked="checked"' : '';
+
+			echo $attrs, '> <span>', $option_label ,'</span></label><br/>';
+		}
+
+		echo '</fieldset>';
+	}
+
+	/**
+	 * Field input: select
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_select( $name, $args, $value )
+	{
+		// default attributes
+		$args = wp_parse_args( $args, array ( 
+				'options' => array(),
+				'attributes' => array(), 
+		) );
+
+		$is_single = !is_array( $value );
+
+		// input layout
+		echo '<select name="', $name ,'" id="', $name ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,'>';
+
+		// options loop
+		foreach ( $args['options'] as $option_label => $option_value )
+		{
+			echo '<option value="', $option_value ,'"';
+
+			if ( $is_single )
+				echo $option_value === $value ? ' selected' : '';
+			else
+				echo in_array( $option_value, $value ) ? ' selected' : '';
+
+			echo '>', $option_label ,'</option>';
+		}
+
+		echo '</select>';
+	}
+
+	/**
+	 * Field description
+	 * 
+	 * @param string $description
+	 * @param string $field_name
+	 * @param array $field_args
+	 * @return void
+	 */
+	protected function field_description( $description, $field_name, $field_args )
+	{
+		if ( !empty( $description ) )
+			echo '<p class="description">', $description ,'</p>';
+	}
+
+	
 
 	/**
 	 * Display Section layout

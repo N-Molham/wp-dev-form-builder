@@ -113,6 +113,7 @@ class SFB_Form
 				'label' => '',
 				'input' => 'text',
 				'data_type' => 'text',
+				'attributes' => array(),
 				'description' => '',
 				'section' => '',
 		);
@@ -208,6 +209,10 @@ class SFB_Form
 		if ( empty( $values ) )
 			$values = array();
 
+		// parse values
+		$values = array_merge( array_fill_keys( array_keys( $this->fields ), '' ), $values );
+
+		// walk through fields
 		$this->mode->walk_fields( $this->sections, $this->fields, $values );
 
 		// final form output

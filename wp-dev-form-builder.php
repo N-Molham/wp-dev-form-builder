@@ -147,7 +147,7 @@ function wp_sfb_test_admin_init()
 					),
 			),
 			'field-textarea' => array ( 
-					'label' => 'Text',
+					'label' => 'Textarea',
 					'input' => 'textarea',
 					'data_type' => 'text',
 					'section' => 'basic',
@@ -163,7 +163,7 @@ function wp_sfb_test_admin_init()
 					'data_type' => 'integer',
 					'section' => 'basic',
 					'attributes' => array ( 
-							'step' => '1',
+							'step' => '10',
 							'min' => '0',
 							'class' => 'small-text',
 					),
@@ -214,7 +214,7 @@ function wp_sfb_test_admin_init()
 					'section' => 'basic',
 			),
 			'field-select-multi' => array ( 
-					'label' => 'Dropdown Menu',
+					'label' => 'Dropdown Menu Multiple',
 					'input' => 'select',
 					'options' => array ( 
 							'one' => 'Option One',
