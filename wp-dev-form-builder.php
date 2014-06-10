@@ -122,7 +122,7 @@ function wp_sfb_test_admin_init()
 			),
 			'advanced' => array ( 
 					'label' => 'Advanced Inputs',
-					'description' => 'Component elements using jQuery etc ...',
+					'description' => 'Advanced Component elements',
 			),
 	) );
 
@@ -241,6 +241,51 @@ function wp_sfb_test_admin_init()
 					'referer' => true,
 					'section' => 'basic',
 			),
+			'field-slider' => array ( 
+					'label' => 'Slider',
+					'input' => 'slider',
+					'slider_options' => array ( 
+							'min' => 0,
+							'max' => 100,
+					),
+					'section' => 'advanced',
+			),
+			'field-slider-range' => array ( 
+					'label' => 'Slider Range',
+					'input' => 'slider',
+					'slider_options' => array ( 
+							'range' => true,
+							'min' => 10,
+							'max' => 100,
+							'values' => array( 30, 70 ),
+					),
+					'section' => 'advanced',
+			),
+			'field-date' => array ( 
+					'label' => 'Date Picker',
+					'input' => 'datepicker',
+					'picker_options' => array ( 
+							'dateFormat' => 'D, dd M yy',
+					),
+					'section' => 'advanced',
+			),
+			'field-color' => array ( 
+					'label' => 'Color Picker',
+					'input' => 'color',
+					'picker_options' => array ( 
+							'defaultColor' => '#ff0000',
+					),
+					'section' => 'advanced',
+			),
+			'field_wysiwyg' => array ( 
+					'label' => 'TinyMCE HTML WYSIWYG editor',
+					'input' => 'wysiwyg',
+					'editor_settings' => array ( 
+							'textarea_rows' => 8,
+							'teeny' => true,
+					),
+					'section' => 'advanced',
+			),
 	) );
 }
 
@@ -269,6 +314,29 @@ function wp_sfb_test_callback()
 			'field-radio' => 'four',
 			'field-checkbox' => 'yes',
 			'field-checkboxes' => array( 'one', 'three' ),
+			'field_wysiwyg' => '<h1>HTML Ipsum Presents</h1>
+
+<p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
+
+<h2>Header Level 2</h2>
+	       
+<ol>
+	<li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+	<li>Aliquam tincidunt mauris eu risus.</li>
+</ol>
+
+<blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>
+
+<h3>Header Level 3</h3>
+
+<ul>
+	<li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+	<li>Aliquam tincidunt mauris eu risus.</li>
+</ul>',
+			'field-color' => '#00a008',
+			'field-date' => 'Fri, 13 Jun 2014',
+			'field-slider' => '50',
+			'field-slider-range' => array( 'min' => 10, 'max' => 90 ),
 	) );
 
 	// page wrapper end

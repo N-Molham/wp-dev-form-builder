@@ -356,6 +356,171 @@ class SFB_Mode
 	}
 
 	/**
+	 * Field input: TinyMCE wysiwyg editor
+	 * 
+	 * Editor id ( field name ) must be lowercase characters only, As of 3.6.1 you can use underscores in the ID 
+	 * 
+	 * @see http://codex.wordpress.org/Function_Reference/wp_editor#Notes
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_wysiwyg( $name, $args, $value )
+	{
+		// default arguments
+		$args = wp_parse_args( $args, array ( 
+				'editor_settings' => array(), 
+		) );
+
+		if ( ! class_exists( '_WP_Editors' ) )
+			require( ABSPATH . WPINC . '/class-wp-editor.php' );
+
+		wp_editor( $value, $name, $args['editor_settings'] );
+	}
+
+	/**
+	 * Field input: color picker
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_color( $name, $args, $value )
+	{
+		if ( !isset( $args['picker_options'] ) )
+			$args['picker_options'] = array();
+
+		// default color picker settings
+		$args['picker_options'] = wp_parse_args( $args['picker_options'], array ( 
+				'defaultColor' => false,
+				'change' => false, 
+				'clear' => false, 
+				'hide' => true, 
+				'palettes' => true,
+		) );
+
+		if ( $args['picker_options']['defaultColor'] )
+		{
+			// add default color
+			$args['attributes']['data-default-color'] = $args['picker_options']['defaultColor'];
+
+			if ( empty( $value ) )
+				$value = $args['picker_options']['defaultColor'];
+		}
+
+		// enqueues
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'wp-color-picker' );
+
+		// input field
+		echo '<input name="', $name ,'" type="text" id="', $name ,'" value="', esc_attr( $value ) ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,' />';
+
+		// js handler
+		echo '<script>( function( window ) { jQuery( function( $ ) {';
+		echo '$( "#', $name ,'" ).wpColorPicker( ', json_encode( $args['picker_options'] ) ,' );';
+		echo '} ); } )( window );</script>';
+	}
+
+	/**
+	 * Field input: date picker
+	 * 
+	 * @see http://api.jqueryui.com/datepicker/ for detailed datepicker options
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_datepicker( $name, $args, $value )
+	{
+		// default date picker settings
+		$args = wp_parse_args( $args, array ( 
+				'picker_options' => array(),
+		) );
+
+		// enqueues
+		wp_enqueue_style( 'sfb-jquery-ui-datepicker', apply_filters( 'sfb_jquery_ui_datepicker_css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css' ) );
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+
+		// input field
+		echo '<input name="', $name ,'" type="text" id="', $name ,'" value="', esc_attr( $value ) ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,' />';
+
+		// js handler
+		echo '<script>( function( window ) { jQuery( function( $ ) {';
+		echo '$( "#', $name ,'" ).datepicker( ', json_encode( $args['picker_options'] ) ,' );';
+		echo '} ); } )( window );</script>';
+	}
+
+	/**
+	 * Field input: slider
+	 * 
+	 * @see http://api.jqueryui.com/slider/ for detailed slider options
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_slider( $name, $args, $value )
+	{
+		if ( !isset( $args['slider_options'] ) )
+			$args['slider_options'] = array();
+
+		// default date picker settings
+		$args['slider_options'] = wp_parse_args( $args['slider_options'], array ( 
+				'range' => false,
+				'min' => 0,
+				'max' => 100,
+				'value' => 0,
+				'values' => null,
+		) );
+
+		// enqueues
+		wp_enqueue_style( 'sfb-jquery-ui-datepicker', apply_filters( 'sfb_jquery_ui_datepicker_css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css' ) );
+		wp_enqueue_script( 'jquery-ui-slider' );
+
+		// input field
+		if ( $args['slider_options']['range'] && !empty( $args['slider_options']['values'] ) )
+		{
+			// range slider
+			if ( is_array( $value ) )
+			{
+				// get from values
+				$args['slider_options']['values'][0] = isset( $value['min'] ) ? $value['min'] : $args['slider_options']['values'][0];
+				$args['slider_options']['values'][1] = isset( $value['max'] ) ? $value['max'] : $args['slider_options']['values'][1];
+			}
+
+			echo '<input type="hidden" name="', $name ,'[min]" id="', $name ,'-min" value="', esc_attr( $args['slider_options']['values'][0] ) ,'" />';
+			echo '<input type="hidden" name="', $name ,'[max]" id="', $name ,'-max" value="', esc_attr( $args['slider_options']['values'][1] ) ,'" />';
+		}
+		else
+		{
+			// single value
+			$args['slider_options']['value'] = $value;
+			echo '<input type="hidden" name="', $name ,'" id="', $name ,'" value="', esc_attr( $value ) ,'" />';
+		}
+
+		// slider holder
+		echo '<div id="', $name ,'-slider"></div>';
+
+		// js handler
+		echo '<script>( function( window ) { jQuery( function( $ ) {';
+		echo 'var options = ', json_encode( $args['slider_options'] ) ,';';
+		echo 'options.slide = function( e, ui ) { ';
+		echo 'if ( typeof ui.values === "undefined" ) { ';
+		echo '$( "#', $name ,'" ).val( ui.value );';
+		echo ' } else { ';
+		echo '$( "#', $name ,'-min" ).val( ui.values[0] );';
+		echo '$( "#', $name ,'-max" ).val( ui.values[1] );';
+		echo ' } };';
+		echo '$( "#', $name ,'-slider" ).slider( options );';
+		echo '} ); } )( window );</script>';
+	}
+
+	/**
 	 * Field description
 	 * 
 	 * @param string $description
