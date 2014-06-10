@@ -173,7 +173,7 @@ function wp_sfb_test_admin_init()
 					'input' => 'checkbox',
 					'single' => true,
 					'options' => array ( 
-							'yes' => 'Option Label',
+							'yes' => 'Yes',
 					),
 					'description' => 'set <code>single</code> parameter to <code>true</code> for a single option',
 					'section' => 'basic',
@@ -230,6 +230,17 @@ function wp_sfb_test_admin_init()
 					),
 					'section' => 'basic',
 			),
+			'field-hidden' => array ( 
+					'input' => 'hidden',
+					'value' => 'hidden_value',
+					'section' => 'basic',
+			),
+			'field-nonce' => array ( 
+					'input' => 'nonce',
+					'action' => 'sfb_save_form',
+					'referer' => true,
+					'section' => 'basic',
+			),
 	) );
 }
 
@@ -245,7 +256,20 @@ function wp_sfb_test_callback()
 
 	echo '<h2>Super Form Builder Demo</h2>';
 
-	SFB_Form::render_form( 'demo' );
+	// get form
+	$form = SFB_Form::get_form( 'demo' );
+
+	// form output with values
+	$form->render_ouput( array ( 
+			'field-text' => 'Prefield value',
+			'field-textarea' => 'People tend to read writing. Whoever evaluates your text cannot evaluate the way you write. Humans are creative beings.',
+			'field-number' => '40',
+			'field-select' => 'two',
+			'field-select-multi' => array( 'two', 'five' ),
+			'field-radio' => 'four',
+			'field-checkbox' => 'yes',
+			'field-checkboxes' => array( 'one', 'three' ),
+	) );
 
 	// page wrapper end
 	echo '</div>';

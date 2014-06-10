@@ -174,6 +174,12 @@ class SFB_Form
 						'method' => 'post', 
 						'enctype' => 'application/x-www-form-urlencoded', 
 				),
+				'submit' => array ( 
+						'name' => 'submit',
+						'text' => null,
+						'before' => '',
+						'after' => '',
+				),
 		);
 
 		$this->settings = apply_filters( 'wp_sfb_form_settings', wp_parse_args( $settings, $defaults ), $this->ID );

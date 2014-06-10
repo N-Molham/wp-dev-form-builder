@@ -86,6 +86,8 @@ class SFB_Mode
 			}
 		}
 
+		$this->submit_button( $this->form_settings['submit'] );
+
 		// end form
 		$this->end_form();
 	}
@@ -100,8 +102,10 @@ class SFB_Mode
 	 */
 	protected function field_layout( $field_name, $field_args, $field_value )
 	{
+		$hidden_fields = apply_filters( 'sfb_mode_hidden_fields', array( 'hidden', 'nonce' ), $this->form_id );
+
 		// layout start
-		echo '<tr><th scope="row">';
+		echo '<tr', ( in_array( $field_args['input'], $hidden_fields ) ? ' class="hidden"' :'' ) ,'><th scope="row">';
 
 		// title
 		echo '<label for="', $field_name ,'">', $field_args['label'] ,'</label></th><td>';
@@ -210,7 +214,7 @@ class SFB_Mode
 	 */
 	protected function input_checkbox( $name, $args, $value )
 	{
-		// default attributes
+		// default arguments
 		$args = wp_parse_args( $args, array ( 
 				'options' => array(),
 				'single' => false, 
@@ -225,7 +229,7 @@ class SFB_Mode
 		$attrs = SFB_Helpers::parse_attributes( $args['attributes'] );
 
 		// options loop
-		foreach ( $args['options'] as $option_label => $option_value )
+		foreach ( $args['options'] as $option_value => $option_label )
 		{
 			echo '<label><input type="checkbox" name="', $name, ( $args['single'] ? '' : '[]' ) ,'" value="', $option_value ,'"';
 
@@ -250,7 +254,7 @@ class SFB_Mode
 	 */
 	protected function input_radio( $name, $args, $value )
 	{
-		// default attributes
+		// default arguments
 		$args = wp_parse_args( $args, array ( 
 				'options' => array(),
 				'attributes' => array(), 
@@ -262,7 +266,7 @@ class SFB_Mode
 		echo '<fieldset><legend class="screen-reader-text"><span>', $args['label'] ,'</span></legend>';
 
 		// options loop
-		foreach ( $args['options'] as $option_label => $option_value )
+		foreach ( $args['options'] as $option_value => $option_label )
 		{
 			echo '<label><input type="radio" name="', $name ,'" value="', $option_value ,'"';
 
@@ -284,7 +288,7 @@ class SFB_Mode
 	 */
 	protected function input_select( $name, $args, $value )
 	{
-		// default attributes
+		// default arguments
 		$args = wp_parse_args( $args, array ( 
 				'options' => array(),
 				'attributes' => array(), 
@@ -296,7 +300,7 @@ class SFB_Mode
 		echo '<select name="', $name ,'" id="', $name ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,'>';
 
 		// options loop
-		foreach ( $args['options'] as $option_label => $option_value )
+		foreach ( $args['options'] as $option_value => $option_label )
 		{
 			echo '<option value="', $option_value ,'"';
 
@@ -309,6 +313,46 @@ class SFB_Mode
 		}
 
 		echo '</select>';
+	}
+
+	/**
+	 * Field input: hidden
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_hidden( $name, $args, $value )
+	{
+		// default arguments
+		$args = wp_parse_args( $args, array ( 
+				'value' => '', 
+		) );
+
+		// input value
+		$value = empty( $value ) ? $args['value'] : $value;
+
+		echo '<input name="', $name ,'" type="hidden" id="', $name ,'" value="', esc_attr( $value ) ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,' />';
+	}
+
+	/**
+	 * Field input: nonce
+	 * 
+	 * @param string $name
+	 * @param array $args
+	 * @param string $value
+	 * @return void
+	 */
+	protected function input_nonce( $name, $args )
+	{
+		// default arguments
+		$args = wp_parse_args( $args, array ( 
+				'action' => '', 
+				'referer' => true, 
+		) );
+
+		wp_nonce_field( $args['action'], $name, $args['referer'] );
 	}
 
 	/**
@@ -325,7 +369,29 @@ class SFB_Mode
 			echo '<p class="description">', $description ,'</p>';
 	}
 
-	
+	/**
+	 * Form submit button
+	 * 
+	 * @param array $args
+	 * @return void
+	 */
+	protected function submit_button( $args )
+	{
+		$args = wp_parse_args( $args, array ( 
+				'type' => 'primary',
+				'wrap' => true,
+				'other_attributes' => null,
+		) );
+
+		// before submit button
+		echo $args['before'];
+
+		// submit button itself
+		submit_button( $args['text'], $args['type'], $args['name'], $args['wrap'], $args['other_attributes'] );
+
+		// after submit button
+		echo $args['after'];
+	}
 
 	/**
 	 * Display Section layout
