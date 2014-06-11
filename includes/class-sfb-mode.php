@@ -22,6 +22,97 @@ class SFB_Mode
 	protected $form_settings;
 
 	/**
+	 * Input Type: Text
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_TEXT = 'text';
+
+	/**
+	 * Input Type: Email Address
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_EMAIL = 'email';
+
+	/**
+	 * Input Type: Text Area
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_TEXTAREA = 'textarea';
+
+	/**
+	 * Input Type: Number
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_NUMBER = 'number';
+
+	/**
+	 * Input Type: Checkbox(s)
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_CHECKBOX = 'checkbox';
+
+	/**
+	 * Input Type: Radio Buttons
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_RADIO = 'radio';
+
+	/**
+	 * Input Type: Select Dropdown Menu
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_SELECT = 'select';
+
+	/**
+	 * Input Type: Hidden
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_HIDDEN = 'hidden';
+
+	/**
+	 * Input Type: WordPress Nonce Field
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_NONCE = 'nonce';
+
+	/**
+	 * Input Type: jQuery Slider
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_SLIDER = 'slider';
+
+	/**
+	 * Input Type: jQuery Date Picker
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_DATEPICKER = 'datepicker';
+
+	/**
+	 * Input Type: WordPress Color Picker
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_COLORPICKER = 'colorpicker';
+
+	/**
+	 * Input Type: TinyMCE wysiwyg editor 
+	 * 
+	 * @var string
+	 */
+	const INPUT_TYPE_WYSIWYG = 'wysiwyg';
+
+	/**
 	 * Constructor
 	 * 
 	 * @param string $form_id
@@ -337,7 +428,7 @@ class SFB_Mode
 	}
 
 	/**
-	 * Field input: nonce
+	 * Field input: WordPress Nonce Field
 	 * 
 	 * @param string $name
 	 * @param array $args
@@ -388,7 +479,7 @@ class SFB_Mode
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_color( $name, $args, $value )
+	protected function input_colorpicker( $name, $args, $value )
 	{
 		if ( !isset( $args['picker_options'] ) )
 			$args['picker_options'] = array();
@@ -419,9 +510,11 @@ class SFB_Mode
 		echo '<input name="', $name ,'" type="text" id="', $name ,'" value="', esc_attr( $value ) ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,' />';
 
 		// js handler
-		echo '<script>( function( window ) { jQuery( function( $ ) {';
-		echo '$( "#', $name ,'" ).wpColorPicker( ', json_encode( $args['picker_options'] ) ,' );';
-		echo '} ); } )( window );</script>';
+		echo '<script>( function( window ) { ';
+			echo 'jQuery( function( $ ) {';
+				echo '$( "#', $name ,'" ).wpColorPicker( ', json_encode( $args['picker_options'] ) ,' );';
+			echo '} );'; 
+		echo '} )( window );</script>';
 	}
 
 	/**
@@ -449,9 +542,11 @@ class SFB_Mode
 		echo '<input name="', $name ,'" type="text" id="', $name ,'" value="', esc_attr( $value ) ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,' />';
 
 		// js handler
-		echo '<script>( function( window ) { jQuery( function( $ ) {';
-		echo '$( "#', $name ,'" ).datepicker( ', json_encode( $args['picker_options'] ) ,' );';
-		echo '} ); } )( window );</script>';
+		echo '<script>( function( window ) { ';
+			echo 'jQuery( function( $ ) {';
+				echo '$( "#', $name ,'" ).datepicker( ', json_encode( $args['picker_options'] ) ,' );';
+			echo '} );'; 
+		echo '} )( window );</script>';
 	}
 
 	/**
@@ -507,17 +602,20 @@ class SFB_Mode
 		echo '<div id="', $name ,'-slider"></div>';
 
 		// js handler
-		echo '<script>( function( window ) { jQuery( function( $ ) {';
-		echo 'var options = ', json_encode( $args['slider_options'] ) ,';';
-		echo 'options.slide = function( e, ui ) { ';
-		echo 'if ( typeof ui.values === "undefined" ) { ';
-		echo '$( "#', $name ,'" ).val( ui.value );';
-		echo ' } else { ';
-		echo '$( "#', $name ,'-min" ).val( ui.values[0] );';
-		echo '$( "#', $name ,'-max" ).val( ui.values[1] );';
-		echo ' } };';
-		echo '$( "#', $name ,'-slider" ).slider( options );';
-		echo '} ); } )( window );</script>';
+		echo '<script>( function( window ) { ';
+			echo 'jQuery( function( $ ) {';
+				echo 'var options = ', json_encode( $args['slider_options'] ) ,';';
+				echo 'options.slide = function( e, ui ) { ';
+					echo 'if ( typeof ui.values === "undefined" ) { ';
+						echo '$( "#', $name ,'" ).val( ui.value );';
+					echo '} else {';
+						echo '$( "#', $name ,'-min" ).val( ui.values[0] );';
+						echo '$( "#', $name ,'-max" ).val( ui.values[1] );';
+					echo '}';
+				echo '};';
+				echo '$( "#', $name ,'-slider" ).slider( options );';
+			echo '} );'; 
+		echo '} )( window );</script>';
 	}
 
 	/**

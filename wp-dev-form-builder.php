@@ -130,14 +130,14 @@ function wp_sfb_test_admin_init()
 	$form->set_fields( array ( 
 			'field-text' => array ( 
 					'label' => 'Text',
-					'input' => 'text',
+					'input' => SFB_Mode::INPUT_TYPE_TEXT,
 					'data_type' => 'text',
 					'description' => 'Regular text input',
 					'section' => 'basic',
 			),
 			'field-mail' => array ( 
 					'label' => 'Email',
-					'input' => 'email',
+					'input' => SFB_Mode::INPUT_TYPE_EMAIL,
 					'data_type' => 'email',
 					'description' => 'Email input',
 					'section' => 'basic',
@@ -148,7 +148,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-textarea' => array ( 
 					'label' => 'Textarea',
-					'input' => 'textarea',
+					'input' => SFB_Mode::INPUT_TYPE_TEXTAREA,
 					'data_type' => 'text',
 					'section' => 'basic',
 					'section' => 'basic',
@@ -159,7 +159,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-number' => array ( 
 					'label' => 'Number',
-					'input' => 'number',
+					'input' => SFB_Mode::INPUT_TYPE_NUMBER,
 					'data_type' => 'integer',
 					'section' => 'basic',
 					'attributes' => array ( 
@@ -170,7 +170,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-checkbox' => array ( 
 					'label' => 'Single Checkbox',
-					'input' => 'checkbox',
+					'input' => SFB_Mode::INPUT_TYPE_CHECKBOX,
 					'single' => true,
 					'options' => array ( 
 							'yes' => 'Yes',
@@ -180,7 +180,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-checkboxes' => array ( 
 					'label' => 'Multiple Checkboxes',
-					'input' => 'checkbox',
+					'input' => SFB_Mode::INPUT_TYPE_CHECKBOX,
 					'single' => false,
 					'options' => array ( 
 							'one' => 'Option One',
@@ -193,7 +193,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-radio' => array ( 
 					'label' => 'Radio',
-					'input' => 'radio',
+					'input' => SFB_Mode::INPUT_TYPE_RADIO,
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -204,7 +204,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-select' => array ( 
 					'label' => 'Dropdown Menu',
-					'input' => 'select',
+					'input' => SFB_Mode::INPUT_TYPE_SELECT,
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -215,7 +215,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-select-multi' => array ( 
 					'label' => 'Dropdown Menu Multiple',
-					'input' => 'select',
+					'input' => SFB_Mode::INPUT_TYPE_SELECT,
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -231,19 +231,19 @@ function wp_sfb_test_admin_init()
 					'section' => 'basic',
 			),
 			'field-hidden' => array ( 
-					'input' => 'hidden',
+					'input' => SFB_Mode::INPUT_TYPE_HIDDEN,
 					'value' => 'hidden_value',
 					'section' => 'basic',
 			),
 			'field-nonce' => array ( 
-					'input' => 'nonce',
+					'input' => SFB_Mode::INPUT_TYPE_NONCE,
 					'action' => 'sfb_save_form',
 					'referer' => true,
 					'section' => 'basic',
 			),
 			'field-slider' => array ( 
 					'label' => 'Slider',
-					'input' => 'slider',
+					'input' => SFB_Mode::INPUT_TYPE_SLIDER,
 					'slider_options' => array ( 
 							'min' => 0,
 							'max' => 100,
@@ -252,7 +252,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-slider-range' => array ( 
 					'label' => 'Slider Range',
-					'input' => 'slider',
+					'input' => SFB_Mode::INPUT_TYPE_SLIDER,
 					'slider_options' => array ( 
 							'range' => true,
 							'min' => 10,
@@ -263,7 +263,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-date' => array ( 
 					'label' => 'Date Picker',
-					'input' => 'datepicker',
+					'input' => SFB_Mode::INPUT_TYPE_DATEPICKER,
 					'picker_options' => array ( 
 							'dateFormat' => 'D, dd M yy',
 					),
@@ -271,7 +271,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-color' => array ( 
 					'label' => 'Color Picker',
-					'input' => 'color',
+					'input' => SFB_Mode::INPUT_TYPE_COLORPICKER,
 					'picker_options' => array ( 
 							'defaultColor' => '#ff0000',
 					),
@@ -279,7 +279,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field_wysiwyg' => array ( 
 					'label' => 'TinyMCE HTML WYSIWYG editor',
-					'input' => 'wysiwyg',
+					'input' => SFB_Mode::INPUT_TYPE_WYSIWYG,
 					'editor_settings' => array ( 
 							'textarea_rows' => 8,
 							'teeny' => true,
