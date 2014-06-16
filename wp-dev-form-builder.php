@@ -99,21 +99,34 @@ function wp_sfb_load_language()
 
 // display only if test mode enabled
 if ( defined( 'SUPER_FB_DEMO_MODE' ) )
-	add_action( 'admin_menu', 'wp_sfb_test_admin_init' );
+{
+	add_action( 'init', 'wp_sfb_test_admin_init' );
+	add_action( 'admin_menu', 'wp_sfb_test_admin_menu' );
+}
+
+/**
+ * TEST: WP Admin Menu
+ * 
+ * @return void
+ */
+function wp_sfb_test_admin_menu()
+{
+	add_management_page( 'Super Form Builder Demo', 'Super Form Builder Demo', 'manage_options', 'wp-sfb-test', 'wp_sfb_test_callback' );
+}
 
 /**
  * TEST: WP Admin init
-*/
+ * 
+ * @return void
+ */
 function wp_sfb_test_admin_init()
 {
-	add_management_page( 'Super Form Builder Demo', 'Super Form Builder Demo', 'manage_options', 'wp-sfb-test', 'wp_sfb_test_callback' );
-
 	// create form
 	$form = new SFB_Form( 'demo' );
 
 	// set settings
 	$form->set_settings( array ( 
-			'page' => 'wp-sfb-test', 
+			'option_key' => 'wp-sfb-test', 
 	) );
 
 	$form->set_sections( array ( 
@@ -130,26 +143,31 @@ function wp_sfb_test_admin_init()
 	$form->set_fields( array ( 
 			'field-text' => array ( 
 					'label' => 'Text',
-					'input' => SFB_Mode::INPUT_TYPE_TEXT,
-					'data_type' => 'text',
+					'input' => SFB_Render_Engine::INPUT_TYPE_TEXT,
+					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
 					'description' => 'Regular text input',
 					'section' => 'basic',
+					'required' => true,
 			),
 			'field-mail' => array ( 
 					'label' => 'Email',
-					'input' => SFB_Mode::INPUT_TYPE_EMAIL,
-					'data_type' => 'email',
+					'input' => SFB_Render_Engine::INPUT_TYPE_EMAIL,
+					'data_type' => SFB_Validator::DATA_TYPE_EMAIL,
 					'description' => 'Email input',
 					'section' => 'basic',
 					'attributes' => array ( 
 							'placeholder' => 'Enter Your Email Address',
 							'class' => 'regular-text code',
-					),
+					), 
+					'required' => true,
 			),
 			'field-textarea' => array ( 
 					'label' => 'Textarea',
-					'input' => SFB_Mode::INPUT_TYPE_TEXTAREA,
-					'data_type' => 'text',
+					'input' => SFB_Render_Engine::INPUT_TYPE_TEXTAREA,
+					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
+					'data_type_options' => array ( 
+							'multiline' => true,  
+					),
 					'section' => 'basic',
 					'section' => 'basic',
 					'attributes' => array ( 
@@ -159,8 +177,8 @@ function wp_sfb_test_admin_init()
 			),
 			'field-number' => array ( 
 					'label' => 'Number',
-					'input' => SFB_Mode::INPUT_TYPE_NUMBER,
-					'data_type' => 'integer',
+					'input' => SFB_Render_Engine::INPUT_TYPE_NUMBER,
+					'data_type' => SFB_Validator::DATA_TYPE_NUMBER,
 					'section' => 'basic',
 					'attributes' => array ( 
 							'step' => '10',
@@ -170,7 +188,11 @@ function wp_sfb_test_admin_init()
 			),
 			'field-checkbox' => array ( 
 					'label' => 'Single Checkbox',
-					'input' => SFB_Mode::INPUT_TYPE_CHECKBOX,
+					'input' => SFB_Render_Engine::INPUT_TYPE_CHECKBOX,
+					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
+					'data_type_options' => array (
+							'from_options' => true,
+					),
 					'single' => true,
 					'options' => array ( 
 							'yes' => 'Yes',
@@ -180,7 +202,11 @@ function wp_sfb_test_admin_init()
 			),
 			'field-checkboxes' => array ( 
 					'label' => 'Multiple Checkboxes',
-					'input' => SFB_Mode::INPUT_TYPE_CHECKBOX,
+					'input' => SFB_Render_Engine::INPUT_TYPE_CHECKBOX,
+					'data_type' => SFB_Validator::DATA_TYPE_ARRAY,
+					'data_type_options' => array (
+							'from_options' => true,
+					),
 					'single' => false,
 					'options' => array ( 
 							'one' => 'Option One',
@@ -193,7 +219,11 @@ function wp_sfb_test_admin_init()
 			),
 			'field-radio' => array ( 
 					'label' => 'Radio',
-					'input' => SFB_Mode::INPUT_TYPE_RADIO,
+					'input' => SFB_Render_Engine::INPUT_TYPE_RADIO,
+					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
+					'data_type_options' => array (
+							'from_options' => true,
+					),
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -204,7 +234,11 @@ function wp_sfb_test_admin_init()
 			),
 			'field-select' => array ( 
 					'label' => 'Dropdown Menu',
-					'input' => SFB_Mode::INPUT_TYPE_SELECT,
+					'input' => SFB_Render_Engine::INPUT_TYPE_SELECT,
+					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
+					'data_type_options' => array (
+							'from_options' => true,
+					),
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -215,7 +249,11 @@ function wp_sfb_test_admin_init()
 			),
 			'field-select-multi' => array ( 
 					'label' => 'Dropdown Menu Multiple',
-					'input' => SFB_Mode::INPUT_TYPE_SELECT,
+					'input' => SFB_Render_Engine::INPUT_TYPE_SELECT,
+					'data_type' => SFB_Validator::DATA_TYPE_ARRAY,
+					'data_type_options' => array (
+							'from_options' => true,
+					),
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -231,19 +269,19 @@ function wp_sfb_test_admin_init()
 					'section' => 'basic',
 			),
 			'field-hidden' => array ( 
-					'input' => SFB_Mode::INPUT_TYPE_HIDDEN,
+					'input' => SFB_Render_Engine::INPUT_TYPE_HIDDEN,
 					'value' => 'hidden_value',
 					'section' => 'basic',
 			),
 			'field-nonce' => array ( 
-					'input' => SFB_Mode::INPUT_TYPE_NONCE,
+					'input' => SFB_Render_Engine::INPUT_TYPE_NONCE,
 					'action' => 'sfb_save_form',
 					'referer' => true,
 					'section' => 'basic',
 			),
 			'field-slider' => array ( 
 					'label' => 'Slider',
-					'input' => SFB_Mode::INPUT_TYPE_SLIDER,
+					'input' => SFB_Render_Engine::INPUT_TYPE_SLIDER,
 					'slider_options' => array ( 
 							'min' => 0,
 							'max' => 100,
@@ -252,7 +290,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-slider-range' => array ( 
 					'label' => 'Slider Range',
-					'input' => SFB_Mode::INPUT_TYPE_SLIDER,
+					'input' => SFB_Render_Engine::INPUT_TYPE_SLIDER,
 					'slider_options' => array ( 
 							'range' => true,
 							'min' => 10,
@@ -263,7 +301,11 @@ function wp_sfb_test_admin_init()
 			),
 			'field-date' => array ( 
 					'label' => 'Date Picker',
-					'input' => SFB_Mode::INPUT_TYPE_DATEPICKER,
+					'input' => SFB_Render_Engine::INPUT_TYPE_DATEPICKER,
+					'data_type' => SFB_Validator::DATA_TYPE_DATE,
+					'data_type_options' => array ( 
+							'format' => 'D, d M Y',
+					),
 					'picker_options' => array ( 
 							'dateFormat' => 'D, dd M yy',
 					),
@@ -271,7 +313,7 @@ function wp_sfb_test_admin_init()
 			),
 			'field-color' => array ( 
 					'label' => 'Color Picker',
-					'input' => SFB_Mode::INPUT_TYPE_COLORPICKER,
+					'input' => SFB_Render_Engine::INPUT_TYPE_COLORPICKER,
 					'picker_options' => array ( 
 							'defaultColor' => '#ff0000',
 					),
@@ -279,7 +321,8 @@ function wp_sfb_test_admin_init()
 			),
 			'field_wysiwyg' => array ( 
 					'label' => 'TinyMCE HTML WYSIWYG editor',
-					'input' => SFB_Mode::INPUT_TYPE_WYSIWYG,
+					'input' => SFB_Render_Engine::INPUT_TYPE_WYSIWYG,
+					'data_type' => SFB_Validator::DATA_TYPE_HTML,
 					'editor_settings' => array ( 
 							'textarea_rows' => 8,
 							'teeny' => true,
@@ -305,39 +348,7 @@ function wp_sfb_test_callback()
 	$form = SFB_Form::get_form( 'demo' );
 
 	// form output with values
-	$form->render_ouput( array ( 
-			'field-text' => 'Prefield value',
-			'field-textarea' => 'People tend to read writing. Whoever evaluates your text cannot evaluate the way you write. Humans are creative beings.',
-			'field-number' => '40',
-			'field-select' => 'two',
-			'field-select-multi' => array( 'two', 'five' ),
-			'field-radio' => 'four',
-			'field-checkbox' => 'yes',
-			'field-checkboxes' => array( 'one', 'three' ),
-			'field_wysiwyg' => '<h1>HTML Ipsum Presents</h1>
-
-<p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
-
-<h2>Header Level 2</h2>
-	       
-<ol>
-	<li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-	<li>Aliquam tincidunt mauris eu risus.</li>
-</ol>
-
-<blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>
-
-<h3>Header Level 3</h3>
-
-<ul>
-	<li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-	<li>Aliquam tincidunt mauris eu risus.</li>
-</ul>',
-			'field-color' => '#00a008',
-			'field-date' => 'Fri, 13 Jun 2014',
-			'field-slider' => '50',
-			'field-slider-range' => array( 'min' => 10, 'max' => 90 ),
-	) );
+	$form->render_ouput();
 
 	// page wrapper end
 	echo '</div>';

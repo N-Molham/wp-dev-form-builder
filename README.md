@@ -1,6 +1,8 @@
 # WordPress Super Form Builder for Developers
 
-A Plugin library for building forms in WordPress easily and fast, it can be used with plugins or themes and it's highly customizable and can be used in both font and back end.
+A Plugin library for building forms IN WordPress easily and fast, it can be used with plugins or themes and it's highly customizable and can be used in both font and back end.
+
+** Please note: it is work in progress **
 
 ## Usage ##
 - As a separate plugin

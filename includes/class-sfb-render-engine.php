@@ -6,7 +6,7 @@
  * @since 1.0
  */
 
-class SFB_Mode
+class SFB_Render_Engine
 {
 	/**
 	 * Connected form ID
@@ -126,14 +126,14 @@ class SFB_Mode
 	}
 
 	/**
-	 * Form fields walk
+	 * Form fields walker
 	 * 
 	 * @param array $form_sections
 	 * @param array $form_fields
 	 * @param arrau $values
 	 * @return void
 	 */
-	public function walk_fields( $form_sections, $form_fields, $values )
+	public function walk_fields( &$form_sections, &$form_fields, $values )
 	{
 		// start form
 		$this->start_form();
@@ -193,21 +193,25 @@ class SFB_Mode
 	 */
 	protected function field_layout( $field_name, $field_args, $field_value )
 	{
-		$hidden_fields = apply_filters( 'sfb_mode_hidden_fields', array( 'hidden', 'nonce' ), $this->form_id );
+		$hidden_fields = apply_filters( 'sfb_render_engine_hidden_fields', array( 'hidden', 'nonce' ), $this->form_id );
 
 		// layout start
-		echo '<tr', ( in_array( $field_args['input'], $hidden_fields ) ? ' class="hidden"' :'' ) ,'><th scope="row">';
+		echo '<tr', ( in_array( $field_args['input'], $hidden_fields ) ? ' class="hidden"' :'' ) ,'>';
 
 		// title
-		echo '<label for="', $field_name ,'">', $field_args['label'] ,'</label></th><td>';
+		echo '<th scope="row">';
+		$this->field_label( $field_args['label'], $field_name, $field_args );
+		echo '</th>';
 
 		// input
+		echo '<td>';
+
 		// check input existance
 		$input_method = 'input_'. sanitize_key( $field_args['input'] );
 		if ( method_exists( $this, $input_method ) )
 			$this->$input_method( $field_name, $field_args, $field_value );
 		else
-			echo 'Unknown input';
+			_e( 'Unknown input', WP_SFB_TEXT_DOMAIN );
 
 		// field description
 		$this->field_description( $field_args['description'], $field_name, $field_args );
@@ -385,20 +389,22 @@ class SFB_Mode
 				'attributes' => array(), 
 		) );
 
-		$is_single = !is_array( $value );
+		$is_multiple = isset( $args['attributes']['multiple'] );
+		if ( $is_multiple && !is_array( $value ) )
+			$value = array();
 
 		// input layout
-		echo '<select name="', $name ,'" id="', $name ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,'>';
+		echo '<select name="', $name, ( $is_multiple ? '[]' : '' ) ,'" id="', $name ,'" ', SFB_Helpers::parse_attributes( $args['attributes'] ) ,'>';
 
 		// options loop
 		foreach ( $args['options'] as $option_value => $option_label )
 		{
 			echo '<option value="', $option_value ,'"';
 
-			if ( $is_single )
-				echo $option_value === $value ? ' selected' : '';
-			else
+			if ( $is_multiple )
 				echo in_array( $option_value, $value ) ? ' selected' : '';
+			else
+				echo $option_value === $value ? ' selected' : '';
 
 			echo '>', $option_label ,'</option>';
 		}
@@ -630,6 +636,20 @@ class SFB_Mode
 	{
 		if ( !empty( $description ) )
 			echo '<p class="description">', $description ,'</p>';
+	}
+
+	/**
+	 * Field label
+	 * 
+	 * @param string $label
+	 * @param string $field_name
+	 * @param array $field_args
+	 * @return void
+	 */
+	protected function field_label( $label, $field_name, $field_args )
+	{
+		echo '<label for="', $field_name ,'">', $label ,'</label>';
+		echo $field_args['required'] ? '<p class="description">( '. __( 'Required', WP_SFB_TEXT_DOMAIN ) .' )</p>' : '';
 	}
 
 	/**

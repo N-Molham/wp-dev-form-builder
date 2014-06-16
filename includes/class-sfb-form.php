@@ -44,11 +44,18 @@ class SFB_Form
 	protected $sections;
 
 	/**
-	 * Form Mode engine
+	 * Form render engine
 	 * 
-	 * @var SFB_Mode
+	 * @var SFB_Render_Engine
 	 */
-	protected $mode;
+	protected $render_engine;
+
+	/**
+	 * Form validation engine
+	 * 
+	 * @var SFB_Validator
+	 */
+	protected $validator_engine;
 
 	/**
 	 * Constructor
@@ -66,12 +73,6 @@ class SFB_Form
 
 		// set settings
 		$this->set_settings( $settings );
-
-		// mode engine instance
-		if ( class_exists( $this->settings['mode_engine'] ) )
-			$this->mode = new $this->settings['mode_engine']( $id, $this->settings );
-		else
-			throw new Exception( 'Mode Engine not found' );
 	}
 
 	/**
@@ -112,10 +113,12 @@ class SFB_Form
 		$default = array ( 
 				'label' => '',
 				'input' => 'text',
-				'data_type' => 'text',
+				'data_type' => SFB_Validator::DATA_TYPE_TEXT,
+				'data_type_options' => array(),
 				'attributes' => array(),
 				'description' => '',
 				'section' => '',
+				'required' => false,
 		);
 
 		// add to field set
@@ -166,23 +169,71 @@ class SFB_Form
 	{
 		// default settings
 		$defaults = array ( 
-				'mode_engine' => 'SFB_Mode',
-				'handler_hook' => 'sfb_handler_'. $this->ID,
-				'page' => '',
+				'render_engine' => 'SFB_Render_Engine', 
+				'validator_engine' => 'SFB_Validator', 
+				'submit_hook' => 'sfb_handler_'. $this->ID, 
+				'option_key' => false, 
 				'attributes' => array ( 
 						'action' => '', 
 						'method' => 'post', 
 						'enctype' => 'application/x-www-form-urlencoded', 
-				),
+				), 
 				'submit' => array ( 
-						'name' => 'submit',
-						'text' => null,
-						'before' => '',
-						'after' => '',
+						'name' => 'sfb_submit', 
+						'text' => null, 
+						'before' => '', 
+						'after' => '', 
 				),
 		);
 
 		$this->settings = apply_filters( 'wp_sfb_form_settings', wp_parse_args( $settings, $defaults ), $this->ID );
+
+		// render engine instance
+		if ( class_exists( $this->settings['render_engine'] ) )
+			$this->render_engine = new $this->settings['render_engine']( $this->ID, $this->settings );
+		else
+			throw new Exception( 'Render Engine not found' );
+
+		// validator engine instance
+		if ( class_exists( $this->settings['validator_engine'] ) )
+			$this->validator_engine = new $this->settings['validator_engine']( $this->ID, $this->settings );
+		else
+			throw new Exception( 'Validation Engine not found' );
+
+		// save form values
+		$save_values_callback = array( &$this, 'save_inputs_values' );
+		if ( $this->settings['option_key'] !== false && !has_action( 'init', $save_values_callback ) )
+			add_action( 'init', $save_values_callback, 15 );
+	}
+
+	/**
+	 * Save form submitted values
+	 * 
+	 * @return void
+	 */
+	public function save_inputs_values()
+	{
+		$submit = $this->settings['submit']['name'];
+
+		// form submit
+		if ( !isset( $_POST[ $submit ] ) )
+			return;
+
+		// global form submitting action
+		do_action( 'sfb_form_submit', $this->ID );
+
+		// specific form submitting
+		do_action( $this->settings['submit_hook'] );
+
+		// submitted form values
+		if ( 'post' === $this->settings['attributes']['method'] )
+			$submitted_values = &$_POST;
+		else
+			$submitted_values = &$_GET;
+
+		$submitted_values = $this->validator_engine->walk_fields( $this->fields, $this->default_fields_values( $submitted_values ) );
+		dump_data( $submitted_values );
+		die();
 	}
 
 	/**
@@ -212,14 +263,11 @@ class SFB_Form
 	{
 		ob_start();
 
-		if ( empty( $values ) )
-			$values = array();
-
 		// parse values
-		$values = array_merge( array_fill_keys( array_keys( $this->fields ), '' ), $values );
+		$values = $this->default_fields_values( $values );
 
 		// walk through fields
-		$this->mode->walk_fields( $this->sections, $this->fields, $values );
+		$this->render_engine->walk_fields( $this->sections, $this->fields, $values );
 
 		// final form output
 		$output = apply_filters( 'wp_sfb_form_output', ob_get_clean(), $this->ID );
@@ -228,6 +276,20 @@ class SFB_Form
 			echo $output;
 		else
 			return $output;
+	}
+
+	/**
+	 * Default fields values
+	 * 
+	 * @param array $values
+	 * @return array
+	 */
+	protected function default_fields_values( $values )
+	{
+		if ( empty( $values ) )
+			$values = array();
+
+		return apply_filters( 'sfb_default_fields_values', array_merge( array_fill_keys( array_keys( $this->fields ), '' ), $values ), $this->ID );
 	}
 
 	/**
