@@ -113,7 +113,7 @@ class SFB_Form
 		$default = array ( 
 				'label' => '',
 				'input' => 'text',
-				'data_type' => SFB_Validator::DATA_TYPE_TEXT,
+				'data_type' => '',
 				'data_type_options' => array(),
 				'attributes' => array(),
 				'description' => '',
@@ -172,7 +172,12 @@ class SFB_Form
 				'render_engine' => 'SFB_Render_Engine', 
 				'validator_engine' => 'SFB_Validator', 
 				'submit_hook' => 'sfb_handler_'. $this->ID, 
+				'submit_redirect' => array ( 
+						'url' => '',
+						'status' => 302,
+				),
 				'option_key' => false, 
+				'option_autoload' => 'no',
 				'attributes' => array ( 
 						'action' => '', 
 						'method' => 'post', 
@@ -232,8 +237,18 @@ class SFB_Form
 			$submitted_values = &$_GET;
 
 		$submitted_values = $this->validator_engine->walk_fields( $this->fields, $this->default_fields_values( $submitted_values ) );
-		dump_data( $submitted_values );
-		die();
+
+		// check option
+		if ( false === get_option( $this->settings['option_key'] ) )
+			add_option( $this->settings['option_key'], $submitted_values, '', $this->settings['option_autoload'] );
+		else 
+			update_option( $this->settings['option_key'], $submitted_values );
+
+		// form data saved
+		do_action_ref_array( 'sfb_form_data_saved', array( $submitted_values, &$this ) );
+
+		// redirect
+		SFB_Helpers::redirect( $this->settings['submit_redirect']['url'], $this->settings['submit_redirect']['status'] );
 	}
 
 	/**

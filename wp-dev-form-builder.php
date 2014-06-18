@@ -145,6 +145,10 @@ function wp_sfb_test_admin_init()
 					'label' => 'Text',
 					'input' => SFB_Render_Engine::INPUT_TYPE_TEXT,
 					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
+					'data_type_options' => array ( 
+							'min_length' => 2,
+							'max_length' => 240,
+					),
 					'description' => 'Regular text input',
 					'section' => 'basic',
 					'required' => true,
@@ -179,20 +183,33 @@ function wp_sfb_test_admin_init()
 					'label' => 'Number',
 					'input' => SFB_Render_Engine::INPUT_TYPE_NUMBER,
 					'data_type' => SFB_Validator::DATA_TYPE_NUMBER,
+					'data_type_options' => array (
+							'min' => 0,
+							'max' => 50,
+					),
 					'section' => 'basic',
 					'attributes' => array ( 
 							'step' => '10',
+							'max' => '50',
 							'min' => '0',
 							'class' => 'small-text',
+					),
+			),
+			'field-regex' => array ( 
+					'label' => 'Regular Expression',
+					'input' => SFB_Render_Engine::INPUT_TYPE_TEXT,
+					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
+					'data_type_options' => array (
+							'regex' => '/^[a-z]{3}-\d{3,4}$/i',
+					),
+					'section' => 'basic',
+					'attributes' => array ( 
+							'class' => 'regular-text code',
 					),
 			),
 			'field-checkbox' => array ( 
 					'label' => 'Single Checkbox',
 					'input' => SFB_Render_Engine::INPUT_TYPE_CHECKBOX,
-					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
-					'data_type_options' => array (
-							'from_options' => true,
-					),
 					'single' => true,
 					'options' => array ( 
 							'yes' => 'Yes',
@@ -203,10 +220,6 @@ function wp_sfb_test_admin_init()
 			'field-checkboxes' => array ( 
 					'label' => 'Multiple Checkboxes',
 					'input' => SFB_Render_Engine::INPUT_TYPE_CHECKBOX,
-					'data_type' => SFB_Validator::DATA_TYPE_ARRAY,
-					'data_type_options' => array (
-							'from_options' => true,
-					),
 					'single' => false,
 					'options' => array ( 
 							'one' => 'Option One',
@@ -220,10 +233,6 @@ function wp_sfb_test_admin_init()
 			'field-radio' => array ( 
 					'label' => 'Radio',
 					'input' => SFB_Render_Engine::INPUT_TYPE_RADIO,
-					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
-					'data_type_options' => array (
-							'from_options' => true,
-					),
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -235,10 +244,6 @@ function wp_sfb_test_admin_init()
 			'field-select' => array ( 
 					'label' => 'Dropdown Menu',
 					'input' => SFB_Render_Engine::INPUT_TYPE_SELECT,
-					'data_type' => SFB_Validator::DATA_TYPE_TEXT,
-					'data_type_options' => array (
-							'from_options' => true,
-					),
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -250,10 +255,6 @@ function wp_sfb_test_admin_init()
 			'field-select-multi' => array ( 
 					'label' => 'Dropdown Menu Multiple',
 					'input' => SFB_Render_Engine::INPUT_TYPE_SELECT,
-					'data_type' => SFB_Validator::DATA_TYPE_ARRAY,
-					'data_type_options' => array (
-							'from_options' => true,
-					),
 					'options' => array ( 
 							'one' => 'Option One',
 							'two' => 'Option Two',
@@ -315,13 +316,14 @@ function wp_sfb_test_admin_init()
 					'label' => 'Color Picker',
 					'input' => SFB_Render_Engine::INPUT_TYPE_COLORPICKER,
 					'picker_options' => array ( 
-							'defaultColor' => '#ff0000',
+							'defaultColor' => '#fff000',
 					),
 					'section' => 'advanced',
 			),
 			'field_wysiwyg' => array ( 
 					'label' => 'TinyMCE HTML WYSIWYG editor',
 					'input' => SFB_Render_Engine::INPUT_TYPE_WYSIWYG,
+					'data_type' => SFB_Validator::DATA_TYPE_HTML,
 					'data_type' => SFB_Validator::DATA_TYPE_HTML,
 					'editor_settings' => array ( 
 							'textarea_rows' => 8,
@@ -348,7 +350,7 @@ function wp_sfb_test_callback()
 	$form = SFB_Form::get_form( 'demo' );
 
 	// form output with values
-	$form->render_ouput();
+	$form->render_ouput( get_option( 'wp-sfb-test' ) );
 
 	// page wrapper end
 	echo '</div>';

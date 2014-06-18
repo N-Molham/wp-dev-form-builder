@@ -8,6 +8,73 @@
 
 final class SFB_Helpers
 {
+	/**
+	 * URL Redirect 
+	 * 
+	 * @param string $target
+	 * @param number $status
+	 * @return void
+	 */
+	public static function redirect( $target = '', $status = 302 )
+	{
+		if ( '' == $target && isset( $_REQUEST['_wp_http_referer'] ) )
+			$target = esc_url( $_REQUEST['_wp_http_referer'] );
+	
+		wp_redirect( $target, $status );
+		die();
+	}
+
+	/**
+	 * Modified version of sanitize_text_field with line-breaks preserved
+	 *
+	 * @see sanitize_text_field
+	 * @since 2.9.0
+	 *
+	 * @param string $str
+	 * @return string
+	 */
+	public static function sanitize_text_field_with_linebreaks( $str ) 
+	{
+		$filtered = wp_check_invalid_utf8( $str );
+
+		if ( strpos($filtered, '<') !== false ) 
+		{
+			$filtered = wp_pre_kses_less_than( $filtered );
+
+			// This will strip extra whitespace for us.
+			$filtered = wp_strip_all_tags( $filtered, true );
+		}
+
+		$found = false;
+		while ( preg_match( '/%[a-f0-9]{2}/i', $filtered, $match ) ) 
+		{
+			$filtered = str_replace( $match[0], '', $filtered );
+			$found = true;
+		}
+
+		if ( $found ) 
+		{
+			// Strip out the whitespace that may now exist after removing the octets.
+			$filtered = trim( preg_replace( '/ +/', ' ', $filtered ) );
+		}
+
+		/**
+		 * Filter a sanitized text field string.
+		 *
+		 * @since 2.9.0
+		 *
+		 * @param string $filtered The sanitized string.
+		 * @param string $str      The string prior to being sanitized.
+		 */
+		return apply_filters( 'sanitize_text_field_with_linebreaks', $filtered, $str );
+	}
+
+	/**
+	 * Parse/Join html attributes
+	 * 
+	 * @param array $attrs
+	 * @return string
+	 */
 	public static function parse_attributes( $attrs )
 	{
 		array_walk( $attrs, function( &$item, $key ) {
