@@ -206,7 +206,7 @@ class SFB_Render_Engine
 		// input
 		echo '<td>';
 
-		// check input existance
+		// check input existence
 		$input_method = 'input_'. sanitize_key( $field_args['input'] );
 		if ( method_exists( $this, $input_method ) )
 			$this->$input_method( $field_name, $field_args, $field_value );
@@ -663,7 +663,7 @@ class SFB_Render_Engine
 		$args = wp_parse_args( $args, array ( 
 				'type' => 'primary',
 				'wrap' => true,
-				'other_attributes' => null,
+				'attributes' => null,
 		) );
 
 		// before submit button

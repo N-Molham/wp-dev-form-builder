@@ -141,6 +141,17 @@ class SFB_Form
 			$this->add_section( $section_name, $section_args );
 	}
 
+
+	/**
+	 * Form Sections getter
+	 *
+	 * @return array
+	 */
+	public function get_sections()
+	{
+		return $this->sections;
+	}
+
 	/**
 	 * Add section to form sections set
 	 *
@@ -185,9 +196,9 @@ class SFB_Form
 				), 
 				'submit' => array ( 
 						'name' => 'sfb_submit', 
-						'text' => null, 
+						'text' => __( 'Save Changes', WP_SFB_TEXT_DOMAIN ), 
 						'before' => '', 
-						'after' => '', 
+						'after' => '',
 				),
 		);
 
@@ -209,6 +220,16 @@ class SFB_Form
 		$save_values_callback = array( &$this, 'save_inputs_values' );
 		if ( $this->settings['option_key'] !== false && !has_action( 'init', $save_values_callback ) )
 			add_action( 'init', $save_values_callback, 15 );
+	}
+
+	/**
+	 * Form Settings getter
+	 * 
+	 * @return array
+	 */
+	public function get_settings()
+	{
+		return $this->settings;
 	}
 
 	/**
