@@ -125,11 +125,9 @@ class SFB_Validator
 		}
 
 		// check if there are errors
-		if ( !empty( $errors->errors ) )
-			return $errors;
-
+		// or
 		// return final values
-		return apply_filters( 'wp_sfb_form_values', $values, $form_fields, $this->form_id );
+		return apply_filters( 'wp_sfb_form_values', empty( $errors->errors ) ? $values : $errors, $form_fields, $this->form_id );
 	}
 
 	/**
@@ -232,7 +230,7 @@ class SFB_Validator
 
 			// options list
 			$options = array_keys( $field_args['options'] );
-			$diff = array_diff( $options, $field_value );
+			$diff = @array_diff( $options, $field_value );
 
 			if ( $diff === $options )
 				return new WP_Error( 'invalid-selection', sprintf( __( '%s has invalid selection.' ), $field_args['label'] ) );
@@ -273,7 +271,7 @@ class SFB_Validator
 
 			// options list
 			$options = array_keys( $field_args['options'] );
-			$diff = array_diff( $options, $field_value );
+			$diff = @array_diff( $options, $field_value );
 
 			if ( $diff === $options )
 				return new WP_Error( 'invalid-selection', sprintf( __( '%s has invalid selection.' ), $field_args['label'] ) );

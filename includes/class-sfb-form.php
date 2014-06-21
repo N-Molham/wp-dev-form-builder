@@ -259,6 +259,15 @@ class SFB_Form
 
 		$submitted_values = $this->validator_engine->walk_fields( $this->fields, $this->default_fields_values( $submitted_values ) );
 
+		if ( is_wp_error( $submitted_values ) )
+		{
+			// save errors
+			$_SESSION['sfb_errors'] = $submitted_values;
+
+			// redirect
+			SFB_Helpers::redirect();
+		}
+
 		// check option
 		if ( false === get_option( $this->settings['option_key'] ) )
 			add_option( $this->settings['option_key'], $submitted_values, '', $this->settings['option_autoload'] );

@@ -166,7 +166,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	/**
 	 * Field input: color picker
 	 * 
-	 * @uses http://bgrins.github.io/spectrum
+	 * @see http://bgrins.github.io/spectrum For more information
 	 * 
 	 * @param string $name
 	 * @param array $args
@@ -178,8 +178,11 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 		if ( !isset( $args['picker_options'] ) )
 			$args['picker_options'] = array();
 
-		// default color picker settings
-		// @see http://bgrins.github.io/spectrum/#options
+		/**
+		 * default color picker settings
+		 * 
+		 * @see http://bgrins.github.io/spectrum/#options
+		 */ 
 		$args['picker_options'] = wp_parse_args( $args['picker_options'], array ( 
 				'polyfill' => false,
 				'color' => false,

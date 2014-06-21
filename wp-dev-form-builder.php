@@ -11,6 +11,10 @@ Domain Path: /languages
 License: GNU General Public License, version 2, http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+// session
+if ( '' === session_id() )
+	session_start();
+
 /**
  * Library physical path
  */

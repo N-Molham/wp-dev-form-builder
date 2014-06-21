@@ -135,6 +135,9 @@ class SFB_Render_Engine
 	 */
 	public function walk_fields( &$form_sections, &$form_fields, $values )
 	{
+		// display messages
+		$this->form_messages();
+
 		// start form
 		$this->start_form();
 
@@ -181,6 +184,30 @@ class SFB_Render_Engine
 
 		// end form
 		$this->end_form();
+	}
+
+	/**
+	 * Display messages if any
+	 * 
+	 * @return void
+	 */
+	protected function form_messages()
+	{
+		// error messages
+		if ( isset( $_SESSION['sfb_errors'] ) && is_wp_error( $_SESSION['sfb_errors'] ) && !empty( $_SESSION['sfb_errors']->errors ) )
+		{
+			/* @var $form_errors WP_Error */
+			$form_errors = &$_SESSION['sfb_errors'];
+
+			foreach ( $form_errors->get_error_messages() as $error )
+				echo '<div class="alert alert-danger alert-dismissable">', $error ,'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+
+			// clear errors
+			$form_errors->errors = array();
+		}
+
+		// trigger messages action hook
+		do_action( 'sfb_form_messages' );
 	}
 
 	/**
