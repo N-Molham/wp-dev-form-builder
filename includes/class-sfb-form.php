@@ -187,6 +187,7 @@ class SFB_Form
 						'url' => '',
 						'status' => 302,
 				),
+				'submit_success' => __( 'Settings saved.', WP_SFB_TEXT_DOMAIN ),
 				'option_key' => false, 
 				'option_autoload' => 'no',
 				'attributes' => array ( 
@@ -195,7 +196,7 @@ class SFB_Form
 						'enctype' => 'application/x-www-form-urlencoded', 
 				), 
 				'submit' => array ( 
-						'name' => 'sfb_submit', 
+						'name' => 'sfb_submit_'. $this->ID, 
 						'text' => __( 'Save Changes', WP_SFB_TEXT_DOMAIN ), 
 						'before' => '', 
 						'after' => '',
@@ -225,11 +226,12 @@ class SFB_Form
 	/**
 	 * Form Settings getter
 	 * 
+	 * @param string $option
 	 * @return array
 	 */
-	public function get_settings()
+	public function get_settings( $option = '' )
 	{
-		return $this->settings;
+		return isset( $this->settings[ $option ] ) ? $this->settings[ $option ] : $this->settings;
 	}
 
 	/**
@@ -277,8 +279,13 @@ class SFB_Form
 		// form data saved
 		do_action_ref_array( 'sfb_form_data_saved', array( $submitted_values, &$this ) );
 
-		// redirect
-		SFB_Helpers::redirect( $this->settings['submit_redirect']['url'], $this->settings['submit_redirect']['status'] );
+		// redirect URL
+		$submit_redirect = $this->settings['submit_redirect']['url'];
+		if ( empty( $submit_redirect ) )
+			$submit_redirect = isset( $_REQUEST['_wp_http_referer'] ) ? esc_url( $_REQUEST['_wp_http_referer'] ) : $_SERVER['REQUEST_URI'];
+
+		// do the redirect
+		SFB_Helpers::redirect( add_query_arg( 'success', 'yes' , $submit_redirect ), $this->settings['submit_redirect']['status'] );
 	}
 
 	/**

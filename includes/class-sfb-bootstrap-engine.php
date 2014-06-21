@@ -17,7 +17,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 * @param mixed $field_value
 	 * @return void
 	 */
-	protected function field_layout( $field_name, $field_args, $field_value )
+	public function field_layout( $field_name, $field_args, $field_value )
 	{
 		$hidden_fields = apply_filters( 'sfb_render_engine_hidden_fields', array( 'hidden', 'nonce' ), $this->form_id );
 
@@ -56,6 +56,36 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	}
 
 	/**
+	 * Display a message
+	 *
+	 * @param string $message
+	 * @param string $type
+	 * @param boolean $dismiss
+	 * @return void
+	 */
+	public function display_message( $message, $type = 'info', $dismiss = false )
+	{
+		switch ( $type )
+		{
+			case 'error':
+				$type = 'danger';
+				break;
+		}
+
+		// message wrapper
+		echo '<div class="alert alert-', $type, ( $dismiss ? ' alert-dismissable' : '' ) ,'">';
+
+		// message body
+		echo $message;
+
+		// message dismiss button
+		echo $dismiss ? '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' : '';
+
+		// wrapper end
+		echo '</div>';
+	}
+
+	/**
 	 * Field input: TinyMCE wysiwyg editor
 	 *
 	 * Editor id ( field name ) must be lowercase characters only, As of 3.6.1 you can use underscores in the ID
@@ -67,7 +97,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_wysiwyg( $name, $args, $value )
+	public function input_wysiwyg( $name, $args, $value )
 	{
 		$args['editor_settings'] = wp_parse_args( $args['editor_settings'], array ( 
 				'wrapper_title' => '',
@@ -97,7 +127,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_checkbox( $name, $args, $value )
+	public function input_checkbox( $name, $args, $value )
 	{
 		// default arguments
 		$args = wp_parse_args( $args, array (
@@ -137,7 +167,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_radio( $name, $args, $value )
+	public function input_radio( $name, $args, $value )
 	{
 		// default arguments
 		$args = wp_parse_args( $args, array (
@@ -173,7 +203,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_colorpicker( $name, $args, $value )
+	public function input_colorpicker( $name, $args, $value )
 	{
 		if ( !isset( $args['picker_options'] ) )
 			$args['picker_options'] = array();
@@ -233,7 +263,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 * @param array $section_args
 	 * @return void
 	 */
-	protected function section_layout( $section_name, $section_args )
+	public function section_layout( $section_name, $section_args )
 	{
 		// title/label
 		echo '<h3 id="'. esc_attr( $section_name ) .'">', $section_args['label'] ,'</h3>';
@@ -249,7 +279,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 * @param array $args
 	 * @return void
 	 */
-	protected function submit_button( $args )
+	public function submit_button( $args )
 	{
 		$args = wp_parse_args( $args, array (
 				'attributes' => array ( 
@@ -279,7 +309,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 * @param array $field_args
 	 * @return void
 	 */
-	protected function field_description( $description, $field_name, $field_args )
+	public function field_description( $description, $field_name, $field_args )
 	{
 		if ( !empty( $description ) )
 			echo '<p class="help-block">', $description ,'</p>';
@@ -290,7 +320,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 *
 	 * @return void
 	 */
-	protected function start_fields_wrapper()
+	public function start_fields_wrapper()
 	{
 		echo '';
 	}
@@ -300,7 +330,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 *
 	 * @return void
 	 */
-	protected function end_fields_wrapper()
+	public function end_fields_wrapper()
 	{
 		echo '';
 	}
@@ -310,7 +340,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 *
 	 * @return string
 	 */
-	protected function start_form()
+	public function start_form()
 	{
 		$attrs = wp_parse_args( $this->form_settings['attributes'], array ( 
 				'class' => 'form-horizontal',
@@ -326,7 +356,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	 *
 	 * @return string
 	 */
-	protected function end_form()
+	public function end_form()
 	{
 		// form tag end
 		echo '</form>';

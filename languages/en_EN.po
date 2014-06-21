@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Super Form Builder\n"
-"POT-Creation-Date: 2014-06-05 16:11+0200\n"
-"PO-Revision-Date: 2014-06-05 16:11+0200\n"
+"POT-Creation-Date: 2014-06-21 19:05+0200\n"
+"PO-Revision-Date: 2014-06-21 19:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: Nabeel Molham <n.molham@gmail.com>\n"
 "Language: en\n"
@@ -15,6 +15,103 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../wp-dev-form-builder.php:89
-msgid "Test"
+#: ../includes/class-sfb-bootstrap-engine.php:49
+#: ../includes/class-sfb-render-engine.php:264
+msgid "Unknown input"
+msgstr ""
+
+#: ../includes/class-sfb-bootstrap-engine.php:231
+msgid "cancel"
+msgstr ""
+
+#: ../includes/class-sfb-bootstrap-engine.php:232
+msgid "choose"
+msgstr ""
+
+#: ../includes/class-sfb-bootstrap-engine.php:233
+msgid "Clear Color Selection"
+msgstr ""
+
+#: ../includes/class-sfb-form.php:190
+msgid "Settings saved."
+msgstr ""
+
+#: ../includes/class-sfb-form.php:200
+msgid "Save Changes"
+msgstr ""
+
+#: ../includes/class-sfb-render-engine.php:702
+msgid "Required"
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:91
+#: ../includes/class-sfb-validator.php:206
+#: ../includes/class-sfb-validator.php:229
+#: ../includes/class-sfb-validator.php:241
+#: ../includes/class-sfb-validator.php:265
+#: ../includes/class-sfb-validator.php:270
+#, php-format
+msgid "%s is required."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:150
+#, php-format
+msgid "%s has invalid color value."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:186
+#, php-format
+msgid "%s value must be between %s and %s."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:236
+#: ../includes/class-sfb-validator.php:277
+#, php-format
+msgid "%s has invalid selection."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:327
+#, php-format
+msgid "%s is an invalid date."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:351
+#, php-format
+msgid "%s is an invalid number."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:360
+#: ../includes/class-sfb-validator.php:371
+#, php-format
+msgid "%s minimum is %s."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:363
+#: ../includes/class-sfb-validator.php:374
+#, php-format
+msgid "%s maximum is %s."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:396
+#, php-format
+msgid "%s is invalid email address."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:426
+#, php-format
+msgid "%s must be at least %s characters."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:430
+#, php-format
+msgid "%s must have maximum %s characters."
+msgstr ""
+
+#: ../includes/class-sfb-validator.php:434
+#, php-format
+msgid "%s is invalid format."
+msgstr ""
+
+#: ../test-mode.php:265
+msgid "HTML Editor"
 msgstr ""

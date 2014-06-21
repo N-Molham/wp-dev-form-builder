@@ -273,12 +273,11 @@ class SFB_Test_Mode
 	 */
 	public function shortcode_output()
 	{
-
 		// get form
 		$form = SFB_Form::get_form( 'bootstrap-form' );
 
 		// form output with values
-		return $form->render_ouput( get_option( 'wp-sfb-bootstarp', '' ), false );
+		return $form->render_ouput( get_option( $form->get_settings( 'option_key' ) ), false );
 	}
 	
 	/**

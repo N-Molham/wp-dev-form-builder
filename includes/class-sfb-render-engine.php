@@ -191,7 +191,7 @@ class SFB_Render_Engine
 	 * 
 	 * @return void
 	 */
-	protected function form_messages()
+	public function form_messages()
 	{
 		// error messages
 		if ( isset( $_SESSION['sfb_errors'] ) && is_wp_error( $_SESSION['sfb_errors'] ) && !empty( $_SESSION['sfb_errors']->errors ) )
@@ -200,14 +200,37 @@ class SFB_Render_Engine
 			$form_errors = &$_SESSION['sfb_errors'];
 
 			foreach ( $form_errors->get_error_messages() as $error )
-				echo '<div class="alert alert-danger alert-dismissable">', $error ,'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+				$this->display_message( $error, 'error' );
 
 			// clear errors
 			$form_errors->errors = array();
 		}
 
+		// success message
+		if ( isset( $_GET['success'] ) && 'yes' === $_GET['success'] )
+			$this->display_message( $this->form_settings['submit_success'], 'success' );
+
 		// trigger messages action hook
 		do_action( 'sfb_form_messages' );
+	}
+
+	/**
+	 * Display a message
+	 * 
+	 * @param string $message
+	 * @param string $type
+	 * @return void
+	 */
+	public function display_message( $message, $type = 'success' )
+	{
+		switch ( $type )
+		{
+			case 'success':
+				$type = 'updated';
+				break;
+		}
+
+		echo '<div class="', $type ,'"><p>', $message ,'</p></div>';
 	}
 
 	/**
@@ -218,7 +241,7 @@ class SFB_Render_Engine
 	 * @param mixed $field_value
 	 * @return void
 	 */
-	protected function field_layout( $field_name, $field_args, $field_value )
+	public function field_layout( $field_name, $field_args, $field_value )
 	{
 		$hidden_fields = apply_filters( 'sfb_render_engine_hidden_fields', array( 'hidden', 'nonce' ), $this->form_id );
 
@@ -255,7 +278,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_text( $name, $args, $value )
+	public function input_text( $name, $args, $value )
 	{
 		// default attributes
 		$attrs = wp_parse_args( $args['attributes'], array ( 
@@ -274,7 +297,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_email( $name, $args, $value )
+	public function input_email( $name, $args, $value )
 	{
 		// default attributes
 		$attrs = wp_parse_args( $args['attributes'], array ( 
@@ -293,7 +316,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_number( $name, $args, $value )
+	public function input_number( $name, $args, $value )
 	{
 		// default attributes
 		$attrs = wp_parse_args( $args['attributes'], array ( 
@@ -313,7 +336,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_textarea( $name, $args, $value )
+	public function input_textarea( $name, $args, $value )
 	{
 		// default attributes
 		$attrs = wp_parse_args( $args['attributes'], array ( 
@@ -334,7 +357,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_checkbox( $name, $args, $value )
+	public function input_checkbox( $name, $args, $value )
 	{
 		// default arguments
 		$args = wp_parse_args( $args, array ( 
@@ -374,7 +397,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_radio( $name, $args, $value )
+	public function input_radio( $name, $args, $value )
 	{
 		// default arguments
 		$args = wp_parse_args( $args, array ( 
@@ -408,7 +431,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_select( $name, $args, $value )
+	public function input_select( $name, $args, $value )
 	{
 		// default arguments
 		$args = wp_parse_args( $args, array ( 
@@ -447,7 +470,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_hidden( $name, $args, $value )
+	public function input_hidden( $name, $args, $value )
 	{
 		// default arguments
 		$args = wp_parse_args( $args, array ( 
@@ -468,7 +491,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_nonce( $name, $args )
+	public function input_nonce( $name, $args )
 	{
 		// default arguments
 		$args = wp_parse_args( $args, array ( 
@@ -491,7 +514,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_wysiwyg( $name, $args, $value )
+	public function input_wysiwyg( $name, $args, $value )
 	{
 		// default arguments
 		$args = wp_parse_args( $args, array ( 
@@ -512,7 +535,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_colorpicker( $name, $args, $value )
+	public function input_colorpicker( $name, $args, $value )
 	{
 		if ( !isset( $args['picker_options'] ) )
 			$args['picker_options'] = array();
@@ -560,7 +583,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_datepicker( $name, $args, $value )
+	public function input_datepicker( $name, $args, $value )
 	{
 		// default date picker settings
 		$args = wp_parse_args( $args, array ( 
@@ -592,7 +615,7 @@ class SFB_Render_Engine
 	 * @param string $value
 	 * @return void
 	 */
-	protected function input_slider( $name, $args, $value )
+	public function input_slider( $name, $args, $value )
 	{
 		if ( !isset( $args['slider_options'] ) )
 			$args['slider_options'] = array();
@@ -659,7 +682,7 @@ class SFB_Render_Engine
 	 * @param array $field_args
 	 * @return void
 	 */
-	protected function field_description( $description, $field_name, $field_args )
+	public function field_description( $description, $field_name, $field_args )
 	{
 		if ( !empty( $description ) )
 			echo '<p class="description">', $description ,'</p>';
@@ -673,7 +696,7 @@ class SFB_Render_Engine
 	 * @param array $field_args
 	 * @return void
 	 */
-	protected function field_label( $label, $field_name, $field_args )
+	public function field_label( $label, $field_name, $field_args )
 	{
 		echo '<label for="', $field_name ,'">', $label ,'</label>';
 		echo $field_args['required'] ? '<p class="description">( '. __( 'Required', WP_SFB_TEXT_DOMAIN ) .' )</p>' : '';
@@ -685,7 +708,7 @@ class SFB_Render_Engine
 	 * @param array $args
 	 * @return void
 	 */
-	protected function submit_button( $args )
+	public function submit_button( $args )
 	{
 		$args = wp_parse_args( $args, array ( 
 				'type' => 'primary',
@@ -697,7 +720,7 @@ class SFB_Render_Engine
 		echo $args['before'];
 
 		// submit button itself
-		submit_button( $args['text'], $args['type'], $args['name'], $args['wrap'], $args['other_attributes'] );
+		submit_button( $args['text'], $args['type'], $args['name'], $args['wrap'], $args['attributes'] );
 
 		// after submit button
 		echo $args['after'];
@@ -710,14 +733,14 @@ class SFB_Render_Engine
 	 * @param array $section_args
 	 * @return void
 	 */
-	protected function section_layout( $section_name, $section_args )
+	public function section_layout( $section_name, $section_args )
 	{
 		// title/label
 		echo '<h3 class="title '. esc_attr( $section_name ) .'">', $section_args['label'] ,'</h3>';
 
 		// description
 		if ( !empty( $section_args['description'] ) )
-			echo '<p>', $section_args['description'] ,'</p>';
+			$this->field_description( $section_args['description'], '', '' );
 	}
 
 	/**
@@ -725,7 +748,7 @@ class SFB_Render_Engine
 	 * 
 	 * @return void
 	 */
-	protected function start_fields_wrapper()
+	public function start_fields_wrapper()
 	{
 		echo '<table class="form-table"><tbody>';
 	}
@@ -735,7 +758,7 @@ class SFB_Render_Engine
 	 *
 	 * @return void
 	 */
-	protected function end_fields_wrapper()
+	public function end_fields_wrapper()
 	{
 		echo '</tbody></table>';
 	}
@@ -745,7 +768,7 @@ class SFB_Render_Engine
 	 * 
 	 * @return string
 	 */
-	protected function start_form()
+	public function start_form()
 	{
 		// form tag
 		echo '<form ', SFB_Helpers::parse_attributes( $this->form_settings['attributes'] ) ,'>';
@@ -756,7 +779,7 @@ class SFB_Render_Engine
 	 * 
 	 * @return string
 	 */
-	protected function end_form()
+	public function end_form()
 	{
 		// form tag end
 		echo '</form>';
