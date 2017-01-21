@@ -3,7 +3,7 @@
 Plugin Name: WP Super Form Builder for Developers
 Plugin URI: http://nabeel.molham.me/wp-plugins/super-form-builder
 Description: A form builder engine for WordPress developers to use as a plugin or as separate library
-Version: 1.0
+Version: 1.0.1
 Author: Nabeel Molham
 Author URI: http://nabeel.molham.me
 Text Domain: wp-super-form-builder
@@ -11,19 +11,23 @@ Domain Path: /languages
 License: GNU General Public License, version 2, http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-// session
 if ( '' === session_id() )
+{
+	// start session if not set yet
 	session_start();
+}
 
-/**
- * Library physical path
- */
 if ( !defined( 'WP_SFB_DIR' ) )
+{
+	/**
+	 * Library physical path
+	 */
 	define( 'WP_SFB_DIR', plugin_dir_path( __FILE__ ) );
+}
 
 /**
  * library URI
- */ 
+ */
 if ( !defined( 'WP_SFB_URI' ) )
 {
 	// check location first
@@ -47,17 +51,21 @@ if ( !defined( 'WP_SFB_URI' ) )
 	}
 }
 
-/**
- * language text domain
- */
 if ( !defined( 'WP_SFB_TEXT_DOMAIN' ) )
+{
+	/**
+	 * language text domain
+	 */
 	define( 'WP_SFB_TEXT_DOMAIN', 'super-form-builder' );
+}
 
-/**
- * language files directory
- */
 if ( !defined( 'WP_SFB_LANG_DIR' ) )
+{
+	/**
+	 * language files directory
+	 */
 	define( 'WP_SFB_LANG_DIR', WP_SFB_DIR . 'languages/' );
+}
 
 /**
  * Includes
@@ -72,6 +80,7 @@ spl_autoload_register( 'wp_sfb_autoload' );
  * `Super_Form_Builder_Fields` becomes => class-super-form-builder-fields.php
  *
  * @param string $class requested class name
+ *
  * @return void
  */
 function wp_sfb_autoload( $class_name )
@@ -81,11 +90,13 @@ function wp_sfb_autoload( $class_name )
 	if ( stripos( $class_name, $prefix ) !== false )
 	{
 		$class_name = str_replace( '_', '-', strtolower( $class_name ) );
-		$file_path = WP_SFB_DIR . 'includes/class-' . $class_name . '.php';
+		$file_path  = WP_SFB_DIR . 'includes/class-' . $class_name . '.php';
 
 		// check class file
 		if ( !file_exists( $file_path ) )
-			wp_die( 'Class file not found, '. $class_name );
+		{
+			wp_die( 'Class file not found, ' . $class_name );
+		}
 
 		require_once $file_path;
 	}
@@ -98,10 +109,15 @@ add_action( 'plugins_loaded', 'wp_sfb_load_language' );
 function wp_sfb_load_language()
 {
 	if ( WP_SFB_LANG_DIR )
+	{
+		// load from language directory
 		load_plugin_textdomain( WP_SFB_TEXT_DOMAIN, false, WP_SFB_LANG_DIR );
+	}
 }
 
 // display only if test mode enabled
 if ( defined( 'SUPER_FB_DEMO_MODE' ) )
-	require WP_SFB_DIR .'test-mode.php';
+{
+	require WP_SFB_DIR . 'test-mode.php';
+}
 
