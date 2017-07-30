@@ -79,9 +79,11 @@ spl_autoload_register( 'wp_sfb_autoload' );
  * `Super_Form_Builder` becomes => class-super-form-builder.php
  * `Super_Form_Builder_Fields` becomes => class-super-form-builder-fields.php
  *
- * @param string $class requested class name
+ * @param string $class_name
  *
  * @return void
+ * @internal param string $class requested class name
+ *
  */
 function wp_sfb_autoload( $class_name )
 {

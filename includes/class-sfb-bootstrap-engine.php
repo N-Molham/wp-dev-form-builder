@@ -31,7 +31,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 		$hidden_fields = apply_filters( 'sfb_render_engine_hidden_fields', [ 'hidden', 'nonce' ], $this->form_id );
 
 		// layout start
-		echo '<div class="form-group ', ( in_array( $field_args['input'], $hidden_fields ) ? ' hidden' : '' ), '">';
+		echo '<div class="form-group ', ( in_array( $field_args['input'], $hidden_fields, true ) ? ' hidden' : '' ), '">';
 
 		// title
 		echo '<label for="', $field_name, '" class="col-sm-2 control-label">';
@@ -147,9 +147,9 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	/**
 	 * Field input: checkbox
 	 *
-	 * @param string $name
-	 * @param array  $args
-	 * @param string $value
+	 * @param string       $name
+	 * @param array        $args
+	 * @param string|array $value
 	 *
 	 * @return void
 	 */
@@ -161,7 +161,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 			'single'  => false,
 		] );
 
-		if ( !$args['single'] && empty( $value ) )
+		if ( empty( $value ) && !$args['single'] )
 		{
 			$value = [];
 		}
@@ -184,7 +184,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 			}
 			else
 			{
-				echo in_array( $option_value, $value ) ? ' checked="checked"' : '';
+				echo in_array( $option_value, $value, true ) ? ' checked="checked"' : '';
 			}
 
 			echo $attrs, '> ', $option_label, '</label></div>';
@@ -393,7 +393,7 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 	/**
 	 * Start form layout
 	 *
-	 * @return string
+	 * @return void
 	 */
 	public function start_form()
 	{
@@ -405,20 +405,4 @@ class SFB_Bootstrap_Engine extends SFB_Render_Engine
 		// form tag
 		echo '<form ', SFB_Helpers::parse_attributes( $attrs ), '>';
 	}
-
-	/**
-	 * End form layout
-	 *
-	 * @return string
-	 */
-	public function end_form()
-	{
-		// form tag end
-		echo '</form>';
-	}
 }
-
-
-
-
-

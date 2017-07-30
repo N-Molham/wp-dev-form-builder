@@ -318,15 +318,11 @@ class SFB_Form
 		do_action( 'pre_' . $this->settings['submit_hook'] );
 
 		// submitted form method
+		$submitted_values = &$_GET;
 		if ( 'post' === $this->settings['attributes']['method'] )
 		{
 			// POST
 			$submitted_values = &$_POST;
-		}
-		else
-		{
-			// GET
-			$submitted_values = &$_GET;
 		}
 
 		// start validating values
@@ -413,8 +409,8 @@ class SFB_Form
 	/**
 	 * Render form layout
 	 *
-	 * @param array ( optional ) $values form fields values
-	 * @param boolean            $echo ( optional ) Wither to echo form rendered layout or not, default true
+	 * @param array|string $values ( optional ) $values form fields values
+	 * @param boolean      $echo ( optional ) Wither to echo form rendered layout or not, default true
 	 *
 	 * @return string|void
 	 */
@@ -506,23 +502,3 @@ class SFB_Form
 		return $form->render_ouput( $values, $echo );
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

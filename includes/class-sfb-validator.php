@@ -59,10 +59,8 @@ class SFB_Validator
 	/**
 	 * Constructor
 	 *
-	 * @param string $form_id
-	 * @param string $settings
-	 *
-	 * @return void
+	 * @param string       $form_id
+	 * @param string|array $form_settings
 	 */
 	public function __construct( $form_id, $form_settings = '' )
 	{
@@ -88,7 +86,7 @@ class SFB_Validator
 			$field_value = &$values[ $field_name ];
 
 			// check required
-			if ( $field_args['required'] && empty( $field_value ) )
+			if ( empty( $field_value ) && $field_args['required'] )
 			{
 				$errors->add( 'required', sprintf( __( '%s is required.', WP_SFB_TEXT_DOMAIN ), $field_args['label'] ) );
 				continue;
@@ -104,10 +102,8 @@ class SFB_Validator
 					$errors->add( $result->get_error_code(), $result->get_error_message() );
 					continue;
 				}
-				else
-				{
-					$field_value = $result;
-				}
+
+				$field_value = $result;
 			}
 
 			// field input type based validation
@@ -120,10 +116,8 @@ class SFB_Validator
 					$errors->add( $result->get_error_code(), $result->get_error_message() );
 					continue;
 				}
-				else
-				{
-					$field_value = $result;
-				}
+
+				$field_value = $result;
 			}
 
 			/**
@@ -162,9 +156,9 @@ class SFB_Validator
 	 */
 	public function input_colorpicker( $field_value, $field_name, $field_args )
 	{
-		$picker_options = wp_parse_args( $field_args['picker_options'], array(
+		$picker_options = wp_parse_args( $field_args['picker_options'], [
 			'defaultColor' => '#ff0000',
-		) );
+		] );
 
 		if ( preg_match( '/^#[a-f0-9]{3}([a-f0-9]{3})?\z/i', $field_value ) !== 1 )
 		{
@@ -196,13 +190,13 @@ class SFB_Validator
 			'max'   => 100,
 		] );
 
-		if ( $slider_options['range'] && is_array( $field_value ) && isset( $field_value['min'], $field_value['max'] ) )
+		if ( is_array( $field_value ) && $slider_options['range'] && isset( $field_value['min'], $field_value['max'] ) )
 		{
 			$selected_range = array_map( 'floatval', $field_value );
 		}
 		else
 		{
-			$selected_range = [ 'min' => floatval( $field_value ), 'max' => floatval( $field_value ) ];
+			$selected_range = [ 'min' => (float) $field_value, 'max' => (float) $field_value ];
 		}
 
 		if (
@@ -260,7 +254,7 @@ class SFB_Validator
 
 		if ( isset( $field_args['attributes']['multiple'] ) )
 		{
-			if ( $field_args['required'] && empty( $field_value ) )
+			if ( empty( $field_value ) && $field_args['required'] )
 			{
 				return new WP_Error( 'required', sprintf( __( '%s is required.' ), $field_args['label'] ) );
 			}
@@ -310,7 +304,7 @@ class SFB_Validator
 		}
 		else
 		{
-			if ( $field_args['required'] && empty( $field_value ) )
+			if ( empty( $field_value ) && $field_args['required'] )
 			{
 				return new WP_Error( 'required', sprintf( __( '%s is required.' ), $field_args['label'] ) );
 			}
@@ -373,7 +367,7 @@ class SFB_Validator
 
 		// check date
 		$datetime = DateTime::createFromFormat( $type_options['format'], $field_value );
-		if ( !$datetime )
+		if ( false === $datetime )
 		{
 			return new WP_Error( 'date-invalid', sprintf( __( '%s is an invalid date.' ), $field_args['label'] ) );
 		}
@@ -409,7 +403,7 @@ class SFB_Validator
 		if ( $type_options['float'] )
 		{
 			// float
-			$field_value = floatval( $field_value );
+			$field_value = (float) $field_value;
 
 			if ( $type_options['min'] !== null && $field_value < $type_options['min'] )
 			{
@@ -424,8 +418,6 @@ class SFB_Validator
 		else
 		{
 			// integer
-			$validate_options = [];
-
 			if ( $type_options['min'] !== null && false === filter_var( $field_value, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => $type_options['min'] ] ] ) )
 			{
 				return new WP_Error( 'number-range', sprintf( __( '%s minimum is %s.' ), $field_args['label'], $type_options['min'] ) );
@@ -482,7 +474,7 @@ class SFB_Validator
 
 		// sanitize text
 		$field_value = $type_options['multiline'] ? SFB_Helpers::sanitize_text_field_with_linebreaks( $field_value ) : sanitize_text_field( $field_value );
-		$length = strlen( $field_value );
+		$length      = strlen( $field_value );
 
 		// check min length
 		if ( $type_options['min_length'] !== null && $length < $type_options['min_length'] )
@@ -504,6 +496,4 @@ class SFB_Validator
 
 		return $field_value;
 	}
-
 }
-

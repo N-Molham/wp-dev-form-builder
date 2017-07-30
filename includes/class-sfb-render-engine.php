@@ -115,8 +115,8 @@ class SFB_Render_Engine
 	/**
 	 * Constructor
 	 *
-	 * @param string $form_id
-	 * @param string $form_settings
+	 * @param string       $form_id
+	 * @param string|array $form_settings
 	 */
 	public function __construct( $form_id, $form_settings = '' )
 	{
@@ -169,8 +169,7 @@ class SFB_Render_Engine
 				$this->start_fields_wrapper();
 
 				// get fields of this section only
-				$section_fields = array_filter( $form_fields, function ( $field ) use ( $section_name )
-				{
+				$section_fields = array_filter( $form_fields, function ( $field ) use ( $section_name ) {
 					return $section_name === $field['section'];
 				} );
 
@@ -216,7 +215,7 @@ class SFB_Render_Engine
 		// success message
 		if ( isset( $_GET['success'] ) && 'yes' === $_GET['success'] )
 		{
-			$this->display_message( $this->form_settings['submit_success'], 'success' );
+			$this->display_message( $this->form_settings['submit_success'] );
 		}
 
 		// trigger messages action hook
@@ -265,7 +264,7 @@ class SFB_Render_Engine
 		$hidden_fields = apply_filters( 'sfb_render_engine_hidden_fields', [ 'hidden', 'nonce' ], $this->form_id );
 
 		// layout start
-		echo '<tr', ( in_array( $field_args['input'], $hidden_fields ) ? ' class="hidden"' : '' ), '>';
+		echo '<tr', ( in_array( $field_args['input'], $hidden_fields, true ) ? ' class="hidden"' : '' ), '>';
 
 		// title
 		echo '<th scope="row">';
@@ -305,9 +304,9 @@ class SFB_Render_Engine
 	public function input_text( $name, $args, $value )
 	{
 		// default attributes
-		$attrs = wp_parse_args( $args['attributes'], array(
+		$attrs = wp_parse_args( $args['attributes'], [
 			'class' => 'regular-text',
-		) );
+		] );
 
 		// input layout
 		echo '<input name="', $name, '" type="text" id="', $name, '" value="', esc_attr( $value ), '" ', SFB_Helpers::parse_attributes( $attrs ), ' />';
@@ -325,9 +324,9 @@ class SFB_Render_Engine
 	public function input_email( $name, $args, $value )
 	{
 		// default attributes
-		$attrs = wp_parse_args( $args['attributes'], array(
+		$attrs = wp_parse_args( $args['attributes'], [
 			'class' => 'regular-text',
-		) );
+		] );
 
 		// input layout
 		echo '<input name="', $name, '" type="email" id="', $name, '" value="', esc_attr( $value ), '" ', SFB_Helpers::parse_attributes( $attrs ), ' />';
@@ -345,10 +344,10 @@ class SFB_Render_Engine
 	public function input_number( $name, $args, $value )
 	{
 		// default attributes
-		$attrs = wp_parse_args( $args['attributes'], array(
+		$attrs = wp_parse_args( $args['attributes'], [
 			'step'  => '1',
 			'class' => 'small-text',
-		) );
+		] );
 
 		// input layout
 		echo '<input name="', $name, '" type="number" id="', $name, '" value="', esc_attr( $value ), '" ', SFB_Helpers::parse_attributes( $attrs ), ' />';
@@ -366,11 +365,11 @@ class SFB_Render_Engine
 	public function input_textarea( $name, $args, $value )
 	{
 		// default attributes
-		$attrs = wp_parse_args( $args['attributes'], array(
+		$attrs = wp_parse_args( $args['attributes'], [
 			'cols'  => '24',
 			'rows'  => '8',
 			'class' => 'large-text',
-		) );
+		] );
 
 		// input layout
 		echo '<textarea name="', $name, '" id="', $name, '" ', SFB_Helpers::parse_attributes( $attrs ), '>', $value, '</textarea>';
@@ -388,12 +387,12 @@ class SFB_Render_Engine
 	public function input_checkbox( $name, $args, $value )
 	{
 		// default arguments
-		$args = wp_parse_args( $args, array(
+		$args = wp_parse_args( $args, [
 			'options' => [],
 			'single'  => false,
-		) );
+		] );
 
-		if ( !$args['single'] && empty( $value ) )
+		if ( empty( $value ) && false === $args['single'] )
 		{
 			$value = [];
 		}
@@ -414,7 +413,7 @@ class SFB_Render_Engine
 			}
 			else
 			{
-				echo in_array( $option_value, $value ) ? ' checked="checked"' : '';
+				echo in_array( $option_value, $value, true ) ? ' checked="checked"' : '';
 			}
 
 			echo $attrs, '> <span>', $option_label, '</span></label><br/>';
@@ -435,10 +434,10 @@ class SFB_Render_Engine
 	public function input_radio( $name, $args, $value )
 	{
 		// default arguments
-		$args = wp_parse_args( $args, array(
+		$args = wp_parse_args( $args, [
 			'options'    => [],
 			'attributes' => [],
-		) );
+		] );
 
 		$attrs = SFB_Helpers::parse_attributes( $args['attributes'] );
 
@@ -470,10 +469,10 @@ class SFB_Render_Engine
 	public function input_select( $name, $args, $value )
 	{
 		// default arguments
-		$args = wp_parse_args( $args, array(
+		$args = wp_parse_args( $args, [
 			'options'    => [],
 			'attributes' => [],
-		) );
+		] );
 
 		$is_multiple = isset( $args['attributes']['multiple'] );
 		if ( $is_multiple && !is_array( $value ) )
@@ -491,7 +490,7 @@ class SFB_Render_Engine
 
 			if ( $is_multiple )
 			{
-				echo in_array( $option_value, $value ) ? ' selected' : '';
+				echo in_array( $option_value, $value, true ) ? ' selected' : '';
 			}
 			else
 			{
@@ -516,9 +515,9 @@ class SFB_Render_Engine
 	public function input_hidden( $name, $args, $value )
 	{
 		// default arguments
-		$args = wp_parse_args( $args, array(
+		$args = wp_parse_args( $args, [
 			'value' => '',
-		) );
+		] );
 
 		// input value
 		$value = empty( $value ) ? $args['value'] : $value;
@@ -537,10 +536,10 @@ class SFB_Render_Engine
 	public function input_nonce( $name, $args )
 	{
 		// default arguments
-		$args = wp_parse_args( $args, array(
+		$args = wp_parse_args( $args, [
 			'action'  => '',
 			'referer' => true,
-		) );
+		] );
 
 		wp_nonce_field( $args['action'], $name, $args['referer'] );
 	}
@@ -561,13 +560,13 @@ class SFB_Render_Engine
 	public function input_wysiwyg( $name, $args, $value )
 	{
 		// default arguments
-		$args = wp_parse_args( $args, array(
+		$args = wp_parse_args( $args, [
 			'editor_settings' => [],
-		) );
+		] );
 
 		if ( !class_exists( '_WP_Editors' ) )
 		{
-			require( ABSPATH . WPINC . '/class-wp-editor.php' );
+			require ABSPATH . WPINC . '/class-wp-editor.php';
 		}
 
 		wp_editor( $value, $name, $args['editor_settings'] );
@@ -590,13 +589,13 @@ class SFB_Render_Engine
 		}
 
 		// default color picker settings
-		$args['picker_options'] = wp_parse_args( $args['picker_options'], array(
+		$args['picker_options'] = wp_parse_args( $args['picker_options'], [
 			'defaultColor' => false,
 			'change'       => false,
 			'clear'        => false,
 			'hide'         => true,
 			'palettes'     => true,
-		) );
+		] );
 
 		if ( $args['picker_options']['defaultColor'] )
 		{
@@ -637,9 +636,9 @@ class SFB_Render_Engine
 	public function input_datepicker( $name, $args, $value )
 	{
 		// default date picker settings
-		$args = wp_parse_args( $args, array(
+		$args = wp_parse_args( $args, [
 			'picker_options' => [],
-		) );
+		] );
 
 		/**
 		 * Filter jQuery UI style CSS
@@ -667,9 +666,9 @@ class SFB_Render_Engine
 	 *
 	 * @see http://api.jqueryui.com/slider/ for detailed slider options
 	 *
-	 * @param string $name
-	 * @param array  $args
-	 * @param string $value
+	 * @param string       $name
+	 * @param array        $args
+	 * @param string|array $value
 	 *
 	 * @return void
 	 */
@@ -681,13 +680,13 @@ class SFB_Render_Engine
 		}
 
 		// default date picker settings
-		$args['slider_options'] = wp_parse_args( $args['slider_options'], array(
+		$args['slider_options'] = wp_parse_args( $args['slider_options'], [
 			'range'  => false,
 			'min'    => 0,
 			'max'    => 100,
 			'value'  => 0,
 			'values' => null,
-		) );
+		] );
 
 		/**
 		 * Filter jQuery UI style CSS
@@ -859,5 +858,3 @@ class SFB_Render_Engine
 		echo '</form>';
 	}
 }
-
-

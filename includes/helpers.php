@@ -12,13 +12,13 @@ final class SFB_Helpers
 	 * URL Redirect
 	 *
 	 * @param string $target
-	 * @param number $status
+	 * @param int    $status
 	 *
 	 * @return void
 	 */
 	public static function redirect( $target = '', $status = 302 )
 	{
-		if ( '' == $target && isset( $_REQUEST['_wp_http_referer'] ) )
+		if ( '' === $target && isset( $_REQUEST['_wp_http_referer'] ) )
 		{
 			$target = esc_url( $_REQUEST['_wp_http_referer'] );
 		}
@@ -82,8 +82,7 @@ final class SFB_Helpers
 	 */
 	public static function parse_attributes( $attrs )
 	{
-		array_walk( $attrs, function ( &$item, $key )
-		{
+		array_walk( $attrs, function ( &$item, $key ) {
 			$item = $key . '="' . esc_attr( $item ) . '"';
 		} );
 
@@ -112,8 +111,8 @@ if ( !function_exists( 'dump_data' ) )
 	/**
 	 * Debug data passed
 	 *
-	 * @param mixed  $data
-	 * @param bolean $type wither to display data type or not
+	 * @param mixed   $data
+	 * @param boolean $type wither to display data type or not
 	 *
 	 * @return void
 	 */
@@ -136,7 +135,7 @@ if ( !function_exists( 'multi_dump_data' ) )
 	 * @return void
 	 * @uses dump_data
 	 */
-	function multi_dump_data( $args )
+	function multi_dump_data()
 	{
 		$args = func_get_args();
 		foreach ( $args as $arg )

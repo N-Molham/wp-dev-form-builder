@@ -36,6 +36,8 @@ class SFB_Test_Mode
 	/**
 	 * TEST: WP Admin init
 	 *
+	 * @throws Exception
+	 *
 	 * @return void
 	 */
 	public function init()
